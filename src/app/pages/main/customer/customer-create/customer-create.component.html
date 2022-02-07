@@ -1,0 +1,161 @@
+<section class="main-container p-20">
+    <div class="row mb-20">
+        <div class="col-xl-auto offset-xl-2">
+            <button type="button" mat-flat-button class="btn btn-sm btn-secondary" (click)="goBack('go_back', 'customer_create')">
+                <i class="icon-back"></i>
+                <span class="ml-15">Go back to list</span>
+            </button>
+        </div>
+    </div>
+    <div class="row mb-20">
+        <div class="col-xl-8 offset-xl-2">
+            <h1 class="heading mb-0">Add new customer</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-8 offset-xl-2">
+            <div class="container-card view-record">
+                <form [formGroup]="userForm">
+                    <div class="p-20">
+                        <h1 class="heading mb-0">Basic Info.</h1>
+                    </div>
+                    <hr class="m-0">
+                    <div class="p-20">
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="text-secondary">First Name <span class="required">*</span></label>
+                                    <input class="form-control mb-10" type="text" formControlName="first_name" maxlength="50"/>
+                                    <ng-container *ngIf="userForm.controls.first_name.touched">
+                                        <p class="text-danger" *ngIf="userForm.controls.first_name.hasError('required')">First name is required</p>
+                                        <p class="text-danger" *ngIf="userForm.controls.first_name.hasError('maxlength')">First name must not exceed 50 characters</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="text-secondary">Last Name <span class="required">*</span></label>
+                                    <input class="form-control mb-10" type="text" formControlName="last_name" maxlength="50"/>
+                                    <ng-container *ngIf="userForm.controls.last_name.touched">
+                                        <p class="text-danger" *ngIf="userForm.controls.last_name.hasError('required')">Last name is required</p>
+                                        <p class="text-danger" *ngIf="userForm.controls.last_name.hasError('maxlength')">Last name must not exceed 50 characters</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="text-secondary">Customer Profile <span class="required">*</span></label>
+                                    <mat-select class="btn btn-drop-down btn-block text-left" formControlName="customer_type_id" placeholder="Select customer profile">
+                                        <mat-option *ngFor="let customer_type of customer_type_options" [value]="customer_type.id">{{ customer_type.type }}</mat-option>
+                                    </mat-select>
+                                    <ng-container *ngIf="userForm.controls.customer_type_id.touched">
+                                        <p class="text-danger mt-0" *ngIf="userForm.controls.customer_type_id.hasError('required')">Customer profile is required</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="text-secondary">Mobile Phone <span class="required">*</span></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">+63</span>
+                                        </div>
+                                        <input type="tel" class="form-control" formControlName="number" placeholder="xxx xxx xxxx" maxlength="10"/>
+                                    </div>
+                                    <ng-container *ngIf="userForm.controls.number.touched">
+                                        <p class="text-danger mt-10" *ngIf="userForm.controls.number.hasError('required')">Mobile phone is required</p>
+                                        <p class="text-danger mt-10" *ngIf="userForm.controls.number.hasError('pattern')">
+                                            Mobile phone is invalid</p>
+                                        <p class="text-danger mt-10" *ngIf="userForm.controls.number.hasError('maxlength')">
+                                            Mobile phone must not exceed 10 digits</p>
+                                        <p class="text-danger mt-10" *ngIf="userForm.controls.number.hasError('minlength')">
+                                            Mobile phone must be atleast 10 digits</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="text-secondary">Email <span class="required">*</span></label>
+                                    <input class="form-control mb-10" type="text" formControlName="email" maxlength="50" minlength="6"/>
+                                    <ng-container *ngIf="userForm.controls.email.touched">
+                                        <p class="text-danger" *ngIf="userForm.controls.email.hasError('required')">Email is required</p>
+                                        <p class="text-danger" *ngIf="userForm.controls.email.hasError('pattern')">Email is invalid</p>
+                                        <p class="text-danger" *ngIf="userForm.controls.email.hasError('maxlength')">Email must not exceed 50 characters</p>
+                                        <p class="text-danger" *ngIf="userForm.controls.email.hasError('minlength')">Email must not contain at least 6 characters</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="text-secondary">Address <span class="required">*</span></label>
+                                    <input class="form-control mb-10" type="text" formControlName="location" maxlength="60"/>
+                                    <ng-container *ngIf="userForm.controls.location.touched">
+                                        <p class="text-danger" *ngIf="userForm.controls.location.hasError('required')">Address is required</p>
+                                        <p class="text-danger" *ngIf="userForm.controls.location.hasError('maxlength')">Address must not exceed 60 characters</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="m-0">
+                    <div class="p-20 pb-10">
+                        <h1 class="heading mb-20">Profile Photo</h1>
+                        <div class="row">
+                            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-3 col-3">
+                                <img *ngIf="!isProfileImageLoaded" class="avatar img-responsive" src="../../../../../assets/images/profile.svg">
+                                <image-cropper 
+                                    class="avatar img-responsive {{isProfileImageLoaded ? '' : 'd-none' }}"
+                                    [imageChangedEvent]="profilePhoto"
+                                    [maintainAspectRatio]="true"
+                                    [aspectRatio]="5 / 5"
+                                    [resizeToWidth]="100"
+                                    format="png,jpg,jpeg,ico"
+                                    (imageCropped)="imageProfilePhotoCropped($event)"
+                                    (imageLoaded)="imageProfileLoaded()"
+                                    [autoCrop]= "true"
+                                ></image-cropper>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-10 col-sm-9 col-9">
+                                <p>Choose a file to upload:</p>
+                                <div class="form-group row">
+                                    <input #file_upload class="d-none" type="file" (change)="fileChange($event)" accept="image/jpeg, image/png"/>
+                                    <div class="col-6">
+                                        <!-- <label for="file-upload" class="btn btn-primary btn-block">
+                                            Choose a file
+                                        </label> -->
+                                        <mat-spinner-button [options]="uploadBtnOps" (btnClick)="chooseFile()"></mat-spinner-button>
+                                    </div>
+                                    <div class="col-6 flex-align-center" *ngIf="!isProfileImageLoaded">
+                                        <p class="m-0 font-italic">No file chosen</p>
+                                    </div>
+                                </div>
+                                <p class="text-danger" *ngIf="profileUploadWrongFile">Image is not valid</p>
+                                <p class="text-danger" *ngIf="uploadMaxLimitReached">Image must not exceed 1MB</p>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-md-12">
+                                <p class="note fs-12 text-justify">Maximum image file size is 1MB. Try resizing it to atleast 500x500 px in resolution.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="m-0">
+                    <div class="p-20">
+                        <div class="row">
+                            <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6 ml-xl-auto ml-lg-auto ml-md-auto">
+                                <button type="button" mat-flat-button class="btn btn-clear btn-block" (click)="goBack('go_back', 'customer_create')">
+                                    Back
+                                </button>
+                            </div>
+                            <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6">
+                                <!-- <button type="submit" mat-flat-button class="btn btn-primary btn-block" (click)="openModal(userForm.value, 'user_add')" [disabled]="!userForm.valid">
+                                    <i class="icon-add"></i>
+                                    <span class="ml-15">Add new customer</span>
+                                </button> -->
+                                <mat-spinner-button (btnClick)="openModal(userForm.value, 'user_add')" [options]="btnOps" [disabled]="!userForm.valid"></mat-spinner-button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

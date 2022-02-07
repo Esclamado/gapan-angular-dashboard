@@ -1,0 +1,18 @@
+@import "./../../../../../../assets/scss/colors.scss";
+
+.meds-title{
+    [class*='col-'] {
+        border-bottom: 2px solid color(primary, light);
+        .mini-heading{
+            color: color(font, secondary);
+        }
+    }
+}
+.meds-cont{
+    [class*='col-'] {
+        border-bottom: 1px solid color(primary, light);
+        /* &:last-child {
+            border-bottom: none;
+        } */
+    }
+}

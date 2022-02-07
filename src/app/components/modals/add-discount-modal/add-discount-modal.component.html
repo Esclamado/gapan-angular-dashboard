@@ -1,0 +1,59 @@
+<div class="row">
+    <div class="col-12">
+        <h6 class="mini-heading">{{ modal_title }}</h6>
+    </div>
+</div>
+<form [formGroup]="discountForm" (ngSubmit)="submit()">
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label class="text-secondary">{{ modal_message }}</label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group" *ngIf="item && item.mode_of_payment == 1">
+                <label class="text-secondary">Total Price</label>
+                <p>₱ {{ item ? (item.total_price | number : '1.2-2') : 0 }}</p>
+            </div>
+            <div class="form-group" *ngIf="item && item.mode_of_payment == 2">
+                <label class="text-secondary">Credited Price</label>
+                <p>₱ {{ item ? (item.payment.balance | number : '1.2-2') : 0 }}</p>
+            </div>
+            <div class="form-group" *ngIf="item && item.mode_of_payment == 3">
+                <label class="text-secondary">Initial amount to pay</label>
+                <p>₱ {{ item ? (item.payment.payment | number : '1.2-2') : 0 }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label class="text-secondary">Discount Amount <span class="required">*</span></label>
+                <input type="number" formControlName="discount" class="form-control mb-10" (input)="calculateFinalPrice($event)"/>
+                <ng-container *ngIf="discountForm.controls.discount.touched">
+                    <p class="text-danger" *ngIf="discountForm.controls.discount.hasError('required')">Discount is required</p>
+                    <p class="text-danger" *ngIf="discountForm.controls.discount.hasError('min')">Discount must be more than zero</p>
+                    <p class="text-danger" *ngIf="discountForm.controls.discount.hasError('max')">Discount must not exceed the total price</p>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label class="text-secondary">Discounted Price</label>
+                <p>₱ {{ discountForm.controls.total_price.value | number : '1.2-2' }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 ml-auto">
+            <button type="button" mat-flat-button class="btn btn-sm btn-block btn-clear" (click)="closeModal()">Cancel</button>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+            <button type="submit" mat-flat-button class="btn btn-sm btn-primary btn-block" [disabled]="!discountForm.valid">Save</button>
+        </div>
+    </div>
+</form>

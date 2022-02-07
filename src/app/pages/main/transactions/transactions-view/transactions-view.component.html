@@ -1,0 +1,623 @@
+<section class="main-container p-20">
+    <div class="row mb-35">
+        <div class="col-10">
+            <h1 class="heading">View Transaction Details</h1>
+        </div>
+        <div class="col-2">
+            <button type="button" mat-flat-button class="btn btn-sm btn-secondary btn-block" (click)="goBack()">
+                <i class="icon-back"></i>
+                <span class="ml-15">Go back to list</span>
+            </button>
+        </div>
+    </div>
+    <!-- <div class="row mb-20" *ngIf="item.order_status <= 3">
+        <div class="col-8">
+            <div class="order-timer">
+                <div class="note">
+                  <img src="./../../../../../assets/images/others/alert-icon.svg">
+                  Orders needed to pick up within 10 hours after processing the order.
+                  <ng-container *ngIf="!display_timer">
+                    <br><br>Note: Customer has not yet picked up the order on the specified time.
+                  </ng-container>
+                </div>
+                <div class="timer" *ngIf="display_timer">
+                  <img src="./../../../../../assets/images/others/timer.svg">
+                  <countdown divider=":" [text]="timerLabels" units="Hours | Minutes | Seconds" [end]="item.date_to_pickup" showZero="true" (reached)="removeTimer($event)"></countdown>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <div class="row mb-20">
+        <div class="col-8">
+            <div class="container-card view-record p-20">
+                <div class="row mb-10">
+                    <div class="col-12">
+                        <p class="mini-heading">Order no.
+                            <ng-container *ngIf="isLoaded">{{ item.transaction_id }}</ng-container>
+                            <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                'border-radius': '5px',
+                                'margin-bottom': '0px',
+                                'height': '20px',
+                                'width': '25%'
+                            }"></ngx-skeleton-loader>
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="data-table p-relative table-listing" style="overflow: auto;">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td class="w-30-per alt">Order Status</td>
+                                        <td class="w-70-per">
+                                            <ng-container *ngIf="isLoaded">{{ item.status }}</ng-container>
+                                            <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                'border-radius': '5px',
+                                                'margin-bottom': '0px',
+                                                'height': '20px',
+                                                'width': '50%'
+                                            }"></ngx-skeleton-loader>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-30-per alt">Mode of Payment</td>
+                                        <td class="w-70-per">
+                                            <ng-container *ngIf="isLoaded">{{ item.payment_type }}</ng-container>
+                                            <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                'border-radius': '5px',
+                                                'margin-bottom': '0px',
+                                                'height': '20px',
+                                                'width': '50%'
+                                            }"></ngx-skeleton-loader>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-30-per alt">Payment Status</td>
+                                        <td class="w-70-per">
+                                            <ng-container *ngIf="isLoaded">{{ item.payment_status_label }}</ng-container>
+                                            <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                'border-radius': '5px',
+                                                'margin-bottom': '0px',
+                                                'height': '20px',
+                                                'width': '50%'
+                                            }"></ngx-skeleton-loader>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-30-per alt">Order Date</td>
+                                        <td class="w-70-per">
+                                            <ng-container *ngIf="isLoaded">{{ item.created_at | timezone | date: 'MM/dd/yyyy' }}</ng-container>
+                                            <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                'border-radius': '5px',
+                                                'margin-bottom': '0px',
+                                                'height': '20px',
+                                                'width': '50%'
+                                            }"></ngx-skeleton-loader>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-30-per alt">Order Time</td>
+                                        <td class="w-70-per">
+                                            <ng-container *ngIf="isLoaded">{{ item.created_at | timezone | date: 'hh:mm aaa' }}</ng-container>
+                                            <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                'border-radius': '5px',
+                                                'margin-bottom': '0px',
+                                                'height': '20px',
+                                                'width': '50%'
+                                            }"></ngx-skeleton-loader>
+                                        </td>
+                                    </tr>
+                                    <ng-container *ngIf="item && item.mode_of_payment == 1">
+                                        <tr>
+                                            <td class="w-30-per alt">Total Bill</td>
+                                            <td class="w-70-per">
+                                                <ng-container *ngIf="isLoaded">
+                                                    <p class="text-danger fs-24 mb-0">₱ {{ item.total_price | number : '1.2-2' }}</p>
+                                                </ng-container>
+                                                <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                    'border-radius': '5px',
+                                                    'margin-bottom': '0px',
+                                                    'height': '20px',
+                                                    'width': '50%'
+                                                }"></ngx-skeleton-loader>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                    <ng-container *ngIf="item && item.mode_of_payment == 2">
+                                        <!-- <tr>
+                                            <td class="w-30-per alt">Order Amount</td>
+                                            <td class="w-70-per">
+                                                <ng-container *ngIf="isLoaded">₱ {{ item.total_price | number : '1.2-2' }}</ng-container>
+                                                <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                    'border-radius': '5px',
+                                                    'margin-bottom': '0px',
+                                                    'height': '20px',
+                                                    'width': '50%'
+                                                }"></ngx-skeleton-loader>
+                                            </td>
+                                        </tr> -->
+                                        <tr>
+                                            <td class="w-30-per alt">Credit Amount</td>
+                                            <td class="w-70-per">
+                                                <ng-container *ngIf="isLoaded">
+                                                    <p class="text-danger fs-24 mb-0">₱ {{ item.payment.balance | number : '1.2-2' }}<span *ngIf="item.discount > 0" class="fs-14">(-{{ item.discount | number : '1.2-2' }})</span></p>
+                                                </ng-container>
+                                                <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                    'border-radius': '5px',
+                                                    'margin-bottom': '0px',
+                                                    'height': '20px',
+                                                    'width': '50%'
+                                                }"></ngx-skeleton-loader>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Date to pay credited amount</td>
+                                            <td class="w-70-per">
+                                                <ng-container *ngIf="isLoaded">{{ item.payment.due_date | timezone | date : 'MM/dd/yyyy' }}</ng-container>
+                                                <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                    'border-radius': '5px',
+                                                    'margin-bottom': '0px',
+                                                    'height': '20px',
+                                                    'width': '50%'
+                                                }"></ngx-skeleton-loader>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                    <ng-container *ngIf="item && item.mode_of_payment == 3">
+                                        <tr>
+                                            <td class="w-30-per alt">Order Amount</td>
+                                            <td class="w-70-per">
+                                                <ng-container *ngIf="isLoaded">₱ {{ item.total_price | number : '1.2-2' }} <span *ngIf="item.discount > 0" class="fs-14">(-{{ item.discount | number : '1.2-2' }})</span></ng-container>
+                                                <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                    'border-radius': '5px',
+                                                    'margin-bottom': '0px',
+                                                    'height': '20px',
+                                                    'width': '50%'
+                                                }"></ngx-skeleton-loader>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Initial Payment</td>
+                                            <td class="w-70-per">
+                                                <ng-container *ngIf="isLoaded">₱ {{ item.payment.payment | number : '1.2-2' }} <span *ngIf="item.discount > 0" class="fs-14">(-{{ item.discount | number : '1.2-2' }})</span></ng-container>
+                                                <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                    'border-radius': '5px',
+                                                    'margin-bottom': '0px',
+                                                    'height': '20px',
+                                                    'width': '50%'
+                                                }"></ngx-skeleton-loader>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Remaining Balance</td>
+                                            <td class="w-70-per">
+                                                <ng-container *ngIf="isLoaded">
+                                                    <p class="text-danger fs-24 mb-0">₱ {{ item.payment.balance | number : '1.2-2' }}</p>
+                                                </ng-container>
+                                                <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                    'border-radius': '5px',
+                                                    'margin-bottom': '0px',
+                                                    'height': '20px',
+                                                    'width': '50%'
+                                                }"></ngx-skeleton-loader>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Date to pay credited amount</td>
+                                            <td class="w-70-per">
+                                                <ng-container *ngIf="isLoaded">{{ item.payment.due_date | timezone | date : 'MM/dd/yyyy' }}</ng-container>
+                                                <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                    'border-radius': '5px',
+                                                    'margin-bottom': '0px',
+                                                    'height': '20px',
+                                                    'width': '50%'
+                                                }"></ngx-skeleton-loader>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                    <tr>
+                                        <td class="w-30-per alt">Customer Name</td>
+                                        <td class="w-70-per">
+                                            <ng-container *ngIf="isLoaded">{{ item.customer_details.profile_first_name }} {{ item.customer_details.profile_last_name }}</ng-container>
+                                            <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                'border-radius': '5px',
+                                                'margin-bottom': '0px',
+                                                'height': '20px',
+                                                'width': '50%'
+                                            }"></ngx-skeleton-loader>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-30-per alt">Mobile Number</td>
+                                        <td class="w-70-per">
+                                            <ng-container *ngIf="isLoaded">{{ item.customer_details.contact_number }}</ng-container>
+                                            <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                'border-radius': '5px',
+                                                'margin-bottom': '0px',
+                                                'height': '20px',
+                                                'width': '50%'
+                                            }"></ngx-skeleton-loader>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-30-per alt">Address</td>
+                                        <td class="w-70-per">
+                                            <ng-container *ngIf="isLoaded">{{ item.customer_details.address_address }}</ng-container>
+                                            <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                'border-radius': '5px',
+                                                'margin-bottom': '0px',
+                                                'height': '20px',
+                                                'width': '50%'
+                                            }"></ngx-skeleton-loader>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-30-per alt">Customer other requests/notes</td>
+                                        <td class="w-70-per">
+                                            <ng-container *ngIf="isLoaded">{{ item.note }}</ng-container>
+                                            <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                'border-radius': '5px',
+                                                'margin-bottom': '0px',
+                                                'height': '20px',
+                                                'width': '50%'
+                                            }"></ngx-skeleton-loader>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="item.created_by">
+                                        <td class="w-30-per alt">Created By</td>
+                                        <td class="w-70-per">
+                                            <ng-container *ngIf="isLoaded">{{ item.created_by }}</ng-container>
+                                            <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                'border-radius': '5px',
+                                                'margin-bottom': '0px',
+                                                'height': '20px',
+                                                'width': '50%'
+                                            }"></ngx-skeleton-loader>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <!-- ACTION CONTAINER -->
+            <!-- <div class="row mb-20" *ngIf="item.order_status == 1">
+                <div class="col-12">
+                    <div class="container-card view-record p-20">
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <p class="mini-heading">Actions</p>
+                            </div>
+                        </div>
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <h6>Cancel Order?</h6>
+                            </div>
+                        </div>
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <p>By cancelling, you need to state the reason for such decision. Reasons must be valid.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <button type="button" mat-flat-button class="btn btn-danger btn-block" (click)="openModal(item, 'order_decline')">Yes I understand, decline this</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+            <div class="row mb-20" *ngIf="item.order_status > 2 && item.order_status < 7">
+                <div class="col-12">
+                    <div class="container-card view-record p-20">
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <p class="mini-heading">Actions</p>
+                            </div>
+                        </div>
+                        <div class="row mb-20">
+                            <div class="col-12">
+                                <button type="button" mat-flat-button class="btn btn-primary btn-block" (click)="openModal(item, 'update_payment')" [disabled]="item.payment_status == 1">Update Payment</button>
+                            </div>
+                        </div>
+                        <div class="row mb-20">
+                            <div class="col-12">
+                                <button type="button" mat-flat-button class="btn btn-primary btn-block" [routerLink]="[ '/transactions/payments', item.id]" [disabled]="!item.payment.receipt_no">View Payment</button>
+                            </div>
+                        </div>
+                        <ng-container *ngIf="item.order_status == 3">
+                            <div class="row mb-10">
+                                <div class="col-12">
+                                    <h6>Cancel Order?</h6>
+                                </div>
+                            </div>
+                            <div class="row mb-10">
+                                <div class="col-12">
+                                    <p>By cancelling, you need to state the reason for such decision. Reasons must be valid.</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <button type="button" mat-flat-button class="btn btn-danger btn-block" (click)="openModal(item, 'order_cancel')">Yes I understand, cancel this</button>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-20" *ngIf="showAction">
+                <div class="col-12" *ngIf="
+                (item.mode_of_payment == 1 && (userProfile.user_role_id == 5 || userProfile.user_role_id == 4)) ||
+                (item.mode_of_payment != 1 && userProfile.user_role_id == 4) ||
+                (item.order_status == 3) ||
+                (item.mode_of_payment != 1 && item.balance_credit_approved == 1 && userProfile.user_role_id == 5)
+                ">
+                    <div class="container-card view-record p-20">
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <p class="mini-heading">Actions</p>
+                            </div>
+                        </div>
+                        <div class="row mb-20" *ngIf="item.order_status != 2">
+                            <div class="col-12">
+                                <button type="button" mat-flat-button class="btn btn-primary btn-block" (click)="openModal(item, primary_button_action)">{{ primary_button }}</button>
+                            </div>
+                        </div>
+                        <ng-container *ngIf="item.order_status == 1">
+                            <div class="row mb-10">
+                                <div class="col-12">
+                                    <h6>Decline Order?</h6>
+                                </div>
+                            </div>
+                            <div class="row mb-10">
+                                <div class="col-12">
+                                    <p>By declining, you need to state the reason for such decision. Reasons must be valid.</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <button type="button" mat-flat-button class="btn btn-danger btn-block" (click)="openModal(item, 'order_decline')">Yes I understand, decline this</button>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="item.order_status == 2">
+                            <div class="row mb-10">
+                                <div class="col-12">
+                                    <h6>Cancel Order?</h6>
+                                </div>
+                            </div>
+                            <div class="row mb-10">
+                                <div class="col-12">
+                                    <p>By cancelling, you need to state the reason for such decision. Reasons must be valid.</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <button type="button" mat-flat-button class="btn btn-danger btn-block" (click)="openModal(item, 'order_cancel')">Yes I understand, cancel this</button>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="col-12" *ngIf="
+                item.mode_of_payment != 1 &&
+                userProfile.user_role_id == 5 &&
+                item.balance_credit_approved == 0">
+                    <div class="container-card view-record p-20">
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <p class="mini-heading">Pending Manager's Approval</p>
+                            </div>
+                        </div>
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <h6>Note:</h6>
+                            </div>
+                        </div>
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <p>Only the manager may approve/decline orders with balance or credit</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-20" *ngIf="item.order_status == 8">
+                <div class="col-12">
+                    <div class="container-card view-record p-20">
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <p class="mini-heading">Order Declined</p>
+                            </div>
+                        </div>
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <h6>Reason for declining:</h6>
+                            </div>
+                        </div>
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <p>{{ item.order_cancel_decline.message }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-20" *ngIf="item.order_status == 7">
+                <div class="col-12">
+                    <div class="container-card view-record p-20">
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <p class="mini-heading">Order Cancelled</p>
+                            </div>
+                        </div>
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <h6>Reason for cancelling:</h6>
+                            </div>
+                        </div>
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <p>{{ item.order_cancel_decline.message }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <button type="button" mat-flat-button class="btn btn-primary btn-block" [routerLink]="[ '/transactions/create']">Create New Transaction</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ACTION CONTAINER -->
+
+            <div class="row mb-20">
+                <div class="col-12">
+                    <div class="container-card view-record p-20">
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <p class="mini-heading">Order Status</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="tracking-sect">
+                                    <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                        'border-radius': '5px',
+                                        'margin-bottom': '0px',
+                                        'height': '20px'
+                                    }"></ngx-skeleton-loader>
+                                    <div class="timeline-sect" *ngIf="isLoaded">
+                                        <ng-container *ngFor="let tl of item.tracking_status; let i = index">
+                                            <div class="tl-row row">
+                                                <div class="col-3 pr-0">
+                                                    <div class="timeline tl-date no-padding-left no-padding-right" *ngIf="tl.created_at">
+                                                        {{ tl.created_at | timezone | date:'MMM dd, yyyy' }}<br>
+                                                        {{ tl.created_at | timezone | date:'h:mm aaa' }}
+                                                    </div>
+                                                </div>
+                                                <div class="col-2">
+                                                    <div class="timeline">
+                                                        <div class="timeline-progress" [ngClass]="{'finish': tl.status == 2}"></div>
+                                                        <div class="timeline-circle" [ngClass]="[tl.status == 2 ? 'finish':'', tl.status == 1 ? 'pending':'', tl.status == 3 ? 'stop' : '']">
+                                                            <img class="tl-check" *ngIf="tl.status == 2" src="./../../../../../assets/images/custom-check.png">
+                                                            <div class="tl-pending" *ngIf="tl.status == 1"></div>
+                                                            <div class="tl-stop" *ngIf="tl.status == 3"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-7 pl-0">
+                                                    <div class="timeline tl-cont no-padding-left">
+                                                        <p class="mb-0 mt-3">{{ tl.statuslabel }}</p>
+                                                        <p class="fs-10">{{ tl.name }}</p>
+                                                        <!-- <p no-margin class="tl-note" *ngIf="tl.note">{{ tl.note }}</p> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="container-card p-20">
+                <div class="row mb-20">
+                    <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12">
+                        <p class="mini-heading">Order no.
+                            <ng-container *ngIf="isLoaded">{{ item.transaction_id }}</ng-container>
+                            <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                'border-radius': '5px',
+                                'margin-bottom': '0px',
+                                'height': '20px',
+                                'width': '25%'
+                            }"></ngx-skeleton-loader>
+                        </p>
+                    </div>
+                    <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6 col-6 ml-auto">
+                        <button type="button" mat-flat-button class="btn btn-primary btn-block" (click)="openModal(null, 'show_stocks')">View Stocks</button>
+                    </div>
+                    <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6 col-6" *ngIf="item && item.order_status != 4 && item.payment && !item.payment.receipt_no">
+                        <button type="button" mat-flat-button class="btn btn-primary btn-block" (click)="openModal(item, 'add_discount')">Add discount</button>
+                    </div>
+                </div>
+                <!-- <div class="row mt-23 mb-20 ml-0 mr-0">
+                    <h1 class="mini-heading mt-auto mb-auto">Order no. {{ item.transaction_id }}</h1>
+                    <button type="button" mat-flat-button class="btn btn-primary ml-auto h-50 pl-40 pr-40">
+                        Add discount
+                    </button>
+                </div> -->
+                <div class="data-table p-relative table-listing" style="overflow: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <ng-container *ngFor="let th of ths; let i = index">
+                                <th [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                                    {{ th.label }}
+                                    <ng-container *ngIf="th.canSort">
+                                    <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                                    <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                                    </ng-container>
+                                </th>
+                                </ng-container>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngIf="isLoaded && order_items.length > 0">
+                                <tr *ngFor="let item of order_items">
+                                    <td>{{ item.egg_type.type }}</td>
+                                    <td>{{ item.order_item_details[0].price | number : '1.2-2' }}</td>
+                                    <td>
+                                        <ng-container *ngFor="let details of item.order_item_details; let i = index">
+                                            {{ details.qty }} {{ details.egg_cart_type.type }}{{ i < item.order_item_details.length - 1 ? ', ' : '' }}
+                                        </ng-container>
+                                    </td>
+                                    <td>{{ item.total_pieces | number }} pieces</td>
+                                    <td>₱ {{ item.total_price | number : '1.2-2' }}</td>
+                                </tr>
+                            </ng-container>
+                            <ng-container *ngIf="!isLoaded">
+                                <tr>
+                                    <td class="text-uppercase" *ngFor="let x of counter(visible_columns.length); let i = index">
+                                        <ngx-skeleton-loader [theme]="{
+                                            'border-radius' : '5px',
+                                            'margin-bottom' : '0px',
+                                            'height' : '20px'
+                                        }"></ngx-skeleton-loader>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                            <ng-container *ngIf="isLoaded && order_items.length == 0">
+                                <tr>
+                                    <td [attr.colspan]="visible_columns.length" class="text-center">No Results found</td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <ng-container *ngFor="let th of ths; let i = index">
+                                    <th [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                                        {{ th.label }}
+                                        <ng-container *ngIf="th.canSort">
+                                        <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                                        <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                                        </ng-container>
+                                    </th>
+                                </ng-container>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

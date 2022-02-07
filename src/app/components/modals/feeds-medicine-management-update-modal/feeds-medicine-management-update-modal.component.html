@@ -1,0 +1,39 @@
+<div class="row">
+    <div class="col-12">
+        <h6 class="mini-heading">{{ modal_title }}</h6>
+    </div>
+</div>
+<form [formGroup]="feedsmedsForm" (ngSubmit)="submit()">
+    <ng-container *ngIf="action != 'delete'">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="text-secondary">Current No. of Orders ({{ type && type == 'meds' ? 'pcs' : 'bags' }})</label>
+                    <input type="text" class="form-control mb-10" placeholder="{{ item.pieces | number }}" disabled/>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="text-secondary">Add Order ({{ type && type == 'meds' ? 'pcs' : 'bags' }}) <span class="required">*</span></label>
+                    <input type="number" formControlName="quantity" min="0" class="form-control mb-10"/>
+                    <ng-container *ngIf="feedsmedsForm.controls.quantity.touched">
+                        <p class="text-danger" *ngIf="feedsmedsForm.controls.quantity.hasError('required')">Quantity is required</p>
+                        <p class="text-danger" *ngIf="feedsmedsForm.controls.quantity.hasError('min') && !item">Quantity must be a whole number</p>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <div class="row">
+        <ng-container *ngIf="action=='edit'">
+            <div class="col-6 text-right">
+                <button type="button" mat-flat-button class="btn btn-sm btn-clear" (click)="closeModal()" [disabled]="isLoading">Cancel</button>
+            </div>
+            <div class="col-6">
+                <mat-spinner-button (btnClick)="submit()" [options]="btnOps" [disabled]="!feedsmedsForm.valid || isLoading"></mat-spinner-button>
+            </div>
+        </ng-container>
+    </div>
+</form>

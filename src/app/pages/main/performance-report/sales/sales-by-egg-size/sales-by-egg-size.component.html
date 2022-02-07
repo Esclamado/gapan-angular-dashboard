@@ -1,0 +1,178 @@
+<ngx-spinner
+    type="ball-pulse"
+></ngx-spinner>
+<section class="main-container p-20">
+    <div class="row mb-35">
+        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12">
+            <h1 class="heading">Sales Performance Report</h1>
+        </div>
+        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6 col-6 ml-auto">
+            <mat-spinner-button (btnClick)="openModal()" [options]="btnOps" [disabled]="!isLoaded"></mat-spinner-button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 mb-20">
+            <div class="container-card p-20">
+                <div class="row">
+                    <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12">
+                        <p class="mb-10">Total Sales by egg sizes</p>
+                        <p class="sub-heading">Total number of sales based on egg sizes</p>
+                    </div>
+                    <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12 ml-auto">
+                        <div class="row">
+                            <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12 ml-auto">
+                                <div class="form-group mb-0">
+                                    <div class="inner-group in-line">
+                                        <label class="mr-15">Show:</label>
+                                        <mat-select multiple class="btn btn-drop-down btn-block text-left" (selectionChange)="changeColumnVisibility($event)" placeholder="All egg type" [(ngModel)]="visible_columns" >
+                                            <mat-select-trigger>By egg type</mat-select-trigger>
+                                            <ng-container *ngFor="let item of ths; let i = index">
+                                                <mat-option [value]="i" [ngClass]="{ 'd-none' : !item.canToggle }">{{ item.label }}</mat-option>
+                                            </ng-container>
+                                        </mat-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12">
+                                <div class="form-group mb-0">
+                                    <input [satDatepicker]="created_at_picker" [max]="max_date" class="w-0 p-0 border-0" (dateChange)="chooseCreatedAt($event)" [(ngModel)]="created_at">
+                                    <sat-datepicker #created_at_picker [rangeMode]="true"></sat-datepicker>
+                                    <button type="button" mat-flat-button class="btn btn-drop-down btn-block text-left" (click)="created_at_picker.open()">{{ from && to ? (from | timezone | date: 'MMMM dd, yyyy') + ' - ' + (to | timezone | date: 'MMMM dd, yyyy') : 'Choose sales dates' }}
+                                        <i class="icon-arrow-drop-down ml-5"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                                <div class="form-group">
+                                    <mat-select multiple class="btn btn-drop-down btn-block" placeholder="All egg type" (selectionChange)="eggTypeSelected($event, i)" [(ngModel)]="selected_eggs">
+                                        <mat-select-trigger>All egg type</mat-select-trigger>
+                                        <mat-option *ngFor="let egg_type of egg_type_options" [value]="egg_type.id">{{ egg_type.type }}</mat-option>
+                                    </mat-select>
+                                </div>
+                            </div> -->
+                            <!-- <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12">
+                                <div class="form-group">
+                                    <mat-select multiple class="btn btn-drop-down btn-block text-left" placeholder="All house/building" (selectionChange)="eggTypeSelected($event, i)" [(ngModel)]="selected_house">
+                                        <mat-select-trigger>All house/building</mat-select-trigger>
+                                        <mat-option *ngFor="let house of house_options" [value]="house.id">House/building no. {{ house.house_name }}</mat-option>
+                                    </mat-select>
+                                </div>
+                            </div> -->
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto ml-auto" *ngIf="from && to">
+                                <button type="button" mat-flat-button class="btn btn-clear btn-sm" (click)="clearFilters()">Reset Filter</button>
+                            </div>
+                        </div>
+                        <!-- <div class="row">
+                            <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 col-12 ml-auto">
+                                <div class="form-group">
+                                    <input [satDatepicker]="created_at_picker" [max]="max_date" class="w-0 p-0 border-0" (dateChange)="chooseCreatedAt($event)" [(ngModel)]="created_at">
+                                    <sat-datepicker #created_at_picker [rangeMode]="true"></sat-datepicker>
+                                    <button type="button" mat-flat-button class="btn btn-drop-down btn-block text-left" (click)="created_at_picker.open()">{{ from && to ? (from | timezone | date: 'MMMM dd, yyyy') + ' - ' + (to | timezone | date: 'MMMM dd, yyyy') : 'Choose harvest dates' }}
+                                        <i class="icon-arrow-drop-down ml-5"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="row mb-20">
+                    <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                        <p class="mb-5 fs-14">Overall Eggs Sold</p>
+                        <h1 class="heading fs-34">{{ overall_eggs_sold | number }}</h1>
+                    </div>
+                </div>
+                <div class="row mb-20" *ngIf="isLoaded && items.length > 0">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-20">
+                        <canvas baseChart 
+                            [datasets]="barChartData"
+                            [labels]="barChartLabels"
+                            [options]="barChartOptions"
+                            [plugins]="barChartPlugins"
+                            [legend]="barChartLegend"
+                            [chartType]="barChartType">
+                        </canvas>
+                    </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                        <p>Egg Sizes</p>
+                    </div>
+                </div>
+                <ng-container *ngIf="visible_columns.length > 1">
+                    <div class="data-table p-relative table-listing" style="overflow: auto;">
+                        <div class="data-table p-relative table-listing" style="overflow: auto;">
+                            <table [ngStyle]="{'width.px': 200 * visible_columns.length}">
+                                <thead>
+                                    <tr>
+                                        <th class="sort" (click)="orderList(true, 'created_at', order.order_by == 'desc' ? 'asc' : 'desc')">
+                                            Date
+                                            <i *ngIf="order.order_by_column == 'created_at'" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                                            <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != 'created_at' }"></i>
+                                        </th>
+                                        <ng-container *ngFor="let th of ths; let i = index">
+                                        <th *ngIf="th.isVisible" [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                                            {{ th.label }}
+                                            <ng-container *ngIf="th.canSort">
+                                            <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                                            <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                                            </ng-container>
+                                        </th>
+                                        </ng-container>
+                                    </tr>
+                                </thead>
+        
+                                <tbody>
+                                    <ng-container *ngIf="isLoaded && items.length > 0">
+                                        <tr *ngFor="let item of items; let i = index">
+                                        <td>{{ item.grouped_date | timezone | date: 'MM/dd/yyyy' }}</td>
+                                        <ng-container *ngFor="let item of item.egg_types; let i = index">
+                                            <td *ngIf="ths[i].isVisible">{{ item.total | number }}</td>
+                                        </ng-container>
+                                        </tr>
+                                    </ng-container>
+                                    <ng-container *ngIf="!isLoaded">
+                                        <tr>
+                                        <td class="text-uppercase" *ngFor="let x of counter(visible_columns.length); let i = index">
+                                            <ngx-skeleton-loader [theme]="{
+                                            'border-radius' : '5px',
+                                            'margin-bottom' : '0px',
+                                            'height' : '20px'
+                                            }"></ngx-skeleton-loader>
+                                        </td>
+                                        </tr>
+                                    </ng-container>
+                                    <ng-container *ngIf="isLoaded && items.length == 0">
+                                        <tr>
+                                        <td [attr.colspan]="visible_columns.length" class="text-center">No Results found</td>
+                                        </tr>
+                                    </ng-container>
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="isLoaded && visible_columns.length == 1">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                        <p class="mb-0">Please choose egg type</p>
+                        </div>
+                    </div>
+                </ng-container>
+                <div class="row mt-20">
+                    <div class="col-xl-7 col-lg-9 col-md-12 col-sm-12 col-12 ml-auto">
+                        <mat-paginator
+                            [length]="totalItems"
+                            [pageSize]="limit"
+                            [hidePageSize]="true"
+                            [showFirstLastButtons]="true"
+                            (page)="gotoPage($event)"
+                            [pageIndex]="page - 1"
+                        >
+                        </mat-paginator>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

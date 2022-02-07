@@ -1,0 +1,61 @@
+<div class="row">
+    <div class="col-12">
+        <h6 class="mini-heading">{{ modal_title }}</h6>
+    </div>
+</div>
+<form [formGroup]="houseForm">
+    <ng-container *ngIf="action == 'delete'">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="text-secondary">{{ modal_message }}</label>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="action != 'delete'">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="text-secondary">Enter House/Building no. <span class="required">*</span></label>
+                    <input type="text" formControlName="house_name" class="form-control mb-10"/>
+                    <ng-container *ngIf="houseForm.controls.house_name.touched">
+                        <p class="text-danger" *ngIf="houseForm.controls.house_name.hasError('required')">House name is required</p>
+                        <p class="text-danger" *ngIf="houseForm.controls.house_name.hasError('maxlength')">House name must not exceed 50 characters</p>
+                        <!-- <p class="text-danger" *ngIf="houseForm.controls.house_name.hasError('pattern')">House/Building no. must be a whole number</p> -->
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="text-secondary">Enter Chicken Capacity <span class="required">*</span></label>
+                    <input type="number" formControlName="capacity" class="form-control mb-10"/>
+                    <ng-container *ngIf="houseForm.controls.capacity.touched">
+                        <p class="text-danger" *ngIf="houseForm.controls.capacity.hasError('required')">Capacity is required</p>
+                        <p class="text-danger" *ngIf="houseForm.controls.capacity.hasError('min') && !item">Capacity must be a whole number</p>
+                        <p class="text-danger" *ngIf="houseForm.controls.capacity.hasError('min') && item && item.beginning">Capacity must be more than the beginning bird count from the existing daily report</p>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <div class="row">
+        <ng-container *ngIf="action=='create' || action=='edit' || (action=='delete' && item.canDelete)">
+            <div class="col-6 text-right">
+                <button type="button" mat-flat-button class="btn btn-sm btn-clear" (click)="closeModal()" [disabled]="isLoading">Cancel</button>
+            </div>
+            <div class="col-6">
+                <!-- <button type="submit" mat-flat-button class="btn btn-sm btn-block" [ngClass]="{'btn-primary' : action != 'delete', 'btn-danger' : action == 'delete' }" [disabled]="!houseForm.valid || isLoading">{{ modal_primary_button }}</button> -->
+                <mat-spinner-button (btnClick)="submit()" [options]="btnOps" [disabled]="!houseForm.valid"></mat-spinner-button>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="action == 'delete' && !item.canDelete">
+            <div class="col-6 ml-auto">
+                <!-- <button type="button" mat-flat-button class="btn btn-sm btn-block btn-primary" (click)="closeModal()">{{ modal_primary_button }}</button> -->
+                <mat-spinner-button (btnClick)="closeModal()" [options]="btnOps"></mat-spinner-button>
+            </div>
+        </ng-container>
+    </div>
+</form>

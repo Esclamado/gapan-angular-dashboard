@@ -1,0 +1,199 @@
+<section class="main-container p-20">
+    <form [formGroup]="orderForm">
+        <div class="row mb-15">
+            <div class="col-xl-auto offset-xl-1">
+                <button type="button" mat-flat-button class="btn btn-sm btn-secondary" (click)="goBack('go_back', 'transaction_create')">
+                    <i class="icon-back"></i>
+                    <span class="ml-15">Go back to list</span>
+                </button>
+            </div>
+        </div>
+        <div class="row mb-35">
+            <div class="col-xl-auto offset-xl-1">
+                <h1 class="heading">Add new order</h1>
+            </div>
+        </div>
+        <div class="row mb-35">
+            <div class="col-4 offset-4">
+                <img src="./../../../../../assets/images/others/order-step-1.svg" class="img-responsive"/>
+            </div>
+        </div>
+        <div class="row mb-20">
+            <div class="col-xl-10 offset-xl-1">
+                <div class="container-card view-record">
+                    <div class="p-20">
+                        <h1 class="heading">Basic Info.</h1>
+                    </div>
+                    <hr class="m-0">
+                    <div class="p-20">
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="text-secondary">Customer Name <span class="required">*</span></label>
+                                    <input class="form-control mb-10" type="text" formControlName="customer_name" [matAutocomplete]="auto" (input)="getCustomerList()"/>
+                                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="customerSelected($event)">
+                                        <mat-option *ngFor="let customer of customer_options" [value]="customer.id">
+                                            <small>{{ customer.profile_first_name }} {{ customer.profile_last_name }}</small>
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                    <ng-container *ngIf="orderForm.controls.customer_name.touched">
+                                        <p class="text-danger"
+                                            *ngIf="orderForm.controls.customer_name.hasError('required')">Customer name is required</p>
+                                        <p class="text-danger" *ngIf="orderForm.controls.customer_name.hasError('maxlength')">Name must not exceed 50 characters</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="text-secondary">Mobile Phone <span class="required">*</span></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text mb-10">+63</span>
+                                        </div>
+                                        <input type="tel" class="form-control mb-10" formControlName="number" placeholder="xxx xxx xxxx" maxlength="10"/>
+                                    </div>
+                                    <ng-container *ngIf="orderForm.controls.number.touched">
+                                        <p class="text-danger" *ngIf="orderForm.controls.number.hasError('required')">
+                                            Mobile phone is required</p>
+                                        <p class="text-danger" *ngIf="orderForm.controls.number.hasError('pattern')">
+                                            Mobile phone is invalid</p>
+                                        <p class="text-danger" *ngIf="orderForm.controls.number.hasError('maxlength')">
+                                            Mobile phone must not exceed 10 digits</p>
+                                        <p class="text-danger" *ngIf="orderForm.controls.number.hasError('minlength')">
+                                            Mobile phone must be atleast 10 digits</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12">
+                                <div class="form-group">
+                                    <label class="text-secondary">Home Address <span class="required">*</span></label>
+                                    <input class="form-control mb-10" type="text" formControlName="location" />
+                                    <ng-container *ngIf="orderForm.controls.location.touched">
+                                        <p class="text-danger" *ngIf="orderForm.controls.location.hasError('required')">
+                                            Home Address is required</p>
+                                        <p class="text-danger" *ngIf="orderForm.controls.location.hasError('maxlength')">
+                                            Address should not exceed 250 characters</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <!-- <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="text-secondary">Mode of Payment <span class="required">*</span></label>
+                                    <mat-select class="btn btn-drop-down btn-sm btn-block text-left" formControlName="mode_of_payment" placeholder="Mode of Payment">
+                                        <mat-option *ngFor="let item of mode_of_payment_options" [value]="item.value">{{ item.label }}</mat-option>
+                                    </mat-select>
+                                    <ng-container *ngIf="orderForm.controls.mode_of_payment.touched">
+                                        <p class="text-danger" *ngIf="orderForm.controls.mode_of_payment.hasError('required')">
+                                            Mode of payment is required</p>
+                                    </ng-container>
+                                </div>
+                            </div> -->
+                            <div class="col-xl-12 col-lg-12 col-md-12">
+                                <label class="text-secondary">Other special requests or message</label>
+                                <textarea class="form-control mb-10" rows="3" maxlength="250" formControlName="request"></textarea>
+                                <ng-container *ngIf="orderForm.controls.request.touched">
+                                    <p class="text-danger" *ngIf="orderForm.controls.request.hasError('maxlength')">Request or message should not exceed 250 characters</p>
+                                </ng-container>
+                                <p class="text-right text-secondary">{{ orderForm.controls.request.value.length }}/250</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-10 offset-xl-1">
+                <div class="container-card view-record">
+                    <div class="p-20">
+                        <h1 class="heading">Add your items</h1>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="data-table p-relative table-listing ml-20 mr-20" style="overflow: auto;">
+                                <table class="border-0">
+                                    <thead>
+                                        <tr>
+                                            <ng-container *ngFor="let th of ths; let i = index">
+                                                <th *ngIf="th.isVisible" [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                                                    {{ th.label }}
+                                                    <ng-container *ngIf="th.canSort">
+                                                        <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                                                        <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                                                    </ng-container>
+                                                </th>
+                                            </ng-container>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="pl-30 pr-30" *ngIf="cart.length > 0">
+                                        <ng-container *ngFor="let item of cart; let i = index">
+                                            <tr>
+                                                <td class="w-20-per border-0">
+                                                    <p class="" [ngClass]="{
+                                                        'text-green' : item.stock > 1000, 
+                                                        'text-danger' : item.stock <= 999
+                                                    }" *ngIf="item.stock">Remaining Stocks: {{ item.stock | number }} <span>pcs</span></p>
+                                                    <mat-select class="btn btn-drop-down btn-sm btn-block text-left" placeholder="Select Egg Size" [value]="item.id" (selectionChange)="eggTypeSelected($event, i)">
+                                                        <ng-container *ngFor="let egg_type of egg_type_options">
+                                                            <mat-option *ngIf="egg_type.stock" [value]="egg_type.id">{{ egg_type.type }}</mat-option>
+                                                        </ng-container>
+                                                    </mat-select>
+                                                </td>
+                                                <td class="w-15-per border-0">
+                                                    ₱ {{ item.price ? (item.price | number : '1.2-2') : 0 }}
+                                                </td>
+                                                <td class="w-20-per border-0">
+                                                    <div class="form-group" *ngFor="let cart_type of item.items; let t = index">
+                                                        <label class="text-secondary">per {{ cart_type.type_id == 1 ? 'case: 360 pcs' : cart_type.type_id == 2 ? 'tray: 30 pcs' : 'piece'}}</label>
+                                                        <input class="form-control mb-10" type="number" min="0" step="1" placeholder="0" (input)="changeQty($event, i, t)" [disabled]="!item.id" [value]="cart_type.qty > 0 ? cart_type.qty : ''"/>
+                                                    </div>
+                                                </td>
+                                                <td class="w-15-per border-0">
+                                                    {{ item.total_qty | number }} pcs
+                                                </td>
+                                                <td class="w-25-per border-0">
+                                                    ₱ {{ item.total_price | number : '1.2-2' }}
+                                                </td>
+                                                <td class="w-5-per border-0">
+                                                    <button type="button" mat-flat-button class="btn btn-clear" (click)="removeItemInCart(i)" *ngIf="cart.length > 1">
+                                                        <i class="icon-cart-remove"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </ng-container>
+                                    </tbody>
+                                    <tbody class="pl-30 pr-30">
+                                        <tr class="border-0">
+                                            <td>
+                                                <button type="button" mat-flat-button class="btn btn-clear" (click)="addItemToCart()">
+                                                    <i class="icon-add-round fs-28"></i>
+                                                    <span class="ml-15">Add new item</span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="m-0">
+                    <div class="p-20">
+                        <div class="row">
+                            <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6 ml-xl-auto ml-lg-auto ml-md-auto">
+                                <button type="button" mat-flat-button class="btn btn-clear btn-block"
+                                    (click)="goBack('form_cancel', 'transaction_create')">
+                                    Cancel
+                                </button>
+                            </div>
+                            <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6">
+                                <!-- <button type="submit" mat-flat-button class="btn btn-primary btn-block" [disabled]="!orderForm.valid || !canProceed">
+                                    Next Step
+                                </button> -->
+                                <mat-spinner-button (btnClick)="submit()" [options]="btnOps" [disabled]="!orderForm.valid || !canProceed"></mat-spinner-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>

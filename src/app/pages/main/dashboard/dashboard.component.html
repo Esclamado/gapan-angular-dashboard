@@ -1,0 +1,341 @@
+<ngx-spinner
+    type="ball-pulse"
+></ngx-spinner>
+<section class="main-container p-20">
+    <div class="row">
+        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12">
+            <h1 class="heading">Welcome to your dashboard, General Manager!</h1>
+            <p class="sub-heading mb-20">These are the things that needs your attention.</p>
+        </div>
+        <!-- <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6 col-6 ml-auto">
+            <button type="button" mat-flat-button class="btn btn-primary btn-block">
+                <i class="icon-download"></i>
+                <span class="ml-15 d-xl-inline d-lg-inline d-md-none d-sm-none d-none">Download as PDF</span>
+                <span class="ml-15 d-xl-none d-lg-none d-md-inline d-sm-inline d-inline">PDF</span>
+            </button>
+        </div> -->
+    </div>
+    <div class="row mb-20">
+        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12">
+          <div class="form-group mb-0 bg-white">
+            <input [satDatepicker]="created_at_picker" [max]="max_date" class="w-0 p-0 border-0" (dateChange)="chooseCreatedAt($event)" [(ngModel)]="created_at">
+            <sat-datepicker #created_at_picker [rangeMode]="true"></sat-datepicker>
+            <button type="button" mat-flat-button class="btn btn-drop-down btn-sm btn-block text-left" (click)="created_at_picker.open()">{{ from && to ? 'Date - ' + (from | timezone | date: 'MM/dd/yyyy') + ' - ' + (to | timezone | date: 'MM/dd/yyyy') : 'Date' }}
+              <i class="icon-arrow-drop-down ml-5"></i>
+            </button>
+          </div>
+        </div>
+    </div>
+    <!-- <div class="row mb-20" *ngIf="type == 0">
+        <div class="col-6 d-flex align-items-center">
+            <p class="sub-heading fw-500 m-0">Today, {{ dateToday | timezone | date: 'MMMM dd, yyyy' }}</p>
+            <div class="divider mr-15 ml-15 h-26"></div>
+            <mat-spinner-button (btnClick)="changeType()" [options]="btnOps"></mat-spinner-button>
+        </div>
+        <div class="col-6 d-flex align-items-center">
+            <p class="sub-heading mb-0 ml-auto italic">(last updated a minute ago)</p>
+        </div>
+    </div>
+    <div class="row mb-20" *ngIf="type == 1">
+        <div class="col-6 d-flex align-items-center">
+        <mat-spinner-button (btnClick)="changeType()" [options]="btnOps"></mat-spinner-button>
+        <div class="divider mr-15 ml-15 h-26"></div>
+        <p class="sub-heading fw-500 m-0">January 1 - {{ dateToday | timezone | date: 'MMMM dd, yyyy' }}</p>
+        </div>
+        <div class="col-6 d-flex align-items-center">
+            <p class="sub-heading mb-0 ml-auto italic">(last updated a minute ago)</p>
+        </div>
+    </div> -->
+    <div class="row">
+        <div class="col-3 mb-20">
+            <div class="container-card p-20">
+                <p class="mini-heading mb-10 fs-14">Daily Reports For Approval</p>
+                <h1 class="heading mb-0">{{ dashboard_data ? (dashboard_data.daily_reports_for_approval | number) : 0 }}</h1>
+            </div>
+        </div>
+        <div class="col-3 mb-20">
+            <div class="container-card p-20">
+                <p class="mini-heading mb-10 fs-14">Sorted Reports For Approval</p>
+                <h1 class="heading mb-0">{{ dashboard_data ? (dashboard_data.sorted_reports_for_approval | number) : 0 }}</h1>
+            </div>
+        </div>
+        <div class="col-3 mb-20">
+            <div class="container-card p-20">
+                <p class="mini-heading mb-10 fs-14">Total Eggs Harvested</p>
+                <h1 class="heading mb-0">{{ dashboard_data ? (dashboard_data.total_eggs_harvested | number) : 0 }}</h1>
+            </div>
+        </div>
+        <div class="col-3 mb-20">
+            <div class="container-card p-20">
+                <p class="mini-heading mb-10 fs-14">Production Rate</p>
+                <h1 class="heading mb-0">{{ dashboard_data ? (dashboard_data.production_rate | number : '1.2-2') : 0 }} %</h1>
+            </div>
+        </div>
+        <div class="col-3 mb-20">
+            <div class="container-card p-20">
+                <p class="mini-heading mb-10 fs-14">Orders For Approval</p>
+                <h1 class="heading mb-0">{{ dashboard_data ? (dashboard_data.collectible_orders_for_approval | number) : 0 }}</h1>
+            </div>
+        </div>
+        <div class="col-3 mb-20">
+            <div class="container-card p-20">
+                <p class="mini-heading mb-10 fs-14">Collectible Amount</p>
+                <h1 class="heading mb-0">₱ {{ dashboard_data ? (dashboard_data.collectibles_amount | number : '1.2-2') : 0 }}</h1>
+            </div>
+        </div>
+        <div class="col-3 mb-20">
+            <div class="container-card p-20">
+                <p class="mini-heading mb-10 fs-14">Fully Paid Amount</p>
+                <h1 class="heading mb-0">₱ {{ dashboard_data ? (dashboard_data.fully_paid_orders | number : '1.2-2') : 0 }}</h1>
+            </div>
+        </div>
+        <div class="col-3 mb-20">
+            <div class="container-card p-20">
+                <p class="mini-heading mb-10 fs-14">Total Revenue</p>
+                <h1 class="heading mb-0">₱ {{ dashboard_data ? (dashboard_data.total_revenue | number : '1.2-2') : 0 }}</h1>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 mb-20">
+            <div class="container-card p-20">
+                <div class="flex-align-center">
+                    <p class="mini-heading mb-0 fs-14">Feed Consumption</p>
+                    <button type="button" mat-flat-button class="btn btn-clear btn-sm ml-auto" [routerLink]="['/performance-report/consumption/feeds']">
+                        <span class="mr-15">View more</span>
+                        <i class=icon-proceed></i>
+                    </button>
+                </div>
+                <div class="row mt-10" *ngIf="feed_consumption_data && feed_consumption_data.length > 0">
+                    <div class="col-12">
+                        <canvas baseChart
+                            [datasets]="barChartData"
+                            [labels]="barChartLabels"
+                            [options]="barChartOptions"
+                            [plugins]="barChartPlugins"
+                            [legend]="barChartLegend"
+                            [chartType]="barChartType">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6 mb-20">
+            <div class="container-card p-20">
+                <div class="flex-align-center">
+                    <p class="mini-heading mb-0 fs-14">Medicine Consumption</p>
+                    <button type="button" mat-flat-button class="btn btn-clear btn-sm ml-auto" [routerLink]="['/performance-report/consumption/medicine']">
+                        <span class="mr-15">View more</span>
+                        <i class=icon-proceed></i>
+                    </button>
+                </div>
+                <div class="row pl-10 pr-10 meds-title mt-10">
+                    <div class="col-4">
+                        <p class="mini-heading fs-14 mb-10 font-weight-normal">Medicine Name</p>
+                    </div>
+                    <div class="col-4">
+                        <p class="mini-heading fs-14 mb-10 font-weight-normal">Unit</p>
+                    </div>
+                    <div class="col-4">
+                        <p class="mini-heading fs-14 mb-10 font-weight-normal">Consumed Value</p>
+                    </div>
+                </div>
+                <div class="row pl-10 pr-10 meds-cont">
+                    <ng-container *ngIf="medicine_consumption_data">
+                        <ng-container *ngFor="let item of medicine_consumption_data; let i = index">
+                            <div class="col-4">
+                                <p class="mini-heading mb-10 mt-10 fs-14 font-weight-normal text-ellipsis">{{ item.medicine }}</p>
+                            </div>
+                            <div class="col-4">
+                                <p class="mini-heading mb-10 mt-10 fs-14 font-weight-normal">{{ item.unit.unit }}</p>
+                            </div>
+                            <div class="col-4">
+                                <p class="mini-heading mb-10 mt-10 fs-14 font-weight-normal">{{ item.consumed_medicine | number }}</p>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="!medicine_consumption_data">
+                        <div class="col-12 text-center">
+                            <p class="sub-heading mt-15">No record found</p>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 mb-20">
+            <div class="container-card p-20">
+                <div class="flex-align-center">
+                    <p class="mini-heading mb-0 fs-14">Harvest Production Status</p>
+                    <button type="button" mat-flat-button class="btn btn-clear btn-sm ml-auto" [routerLink]="['/daily-reports']">
+                        <span class="mr-15">View more</span>
+                        <i class=icon-proceed></i>
+                    </button>
+                </div>
+                <div class="row pl-10 pr-10 meds-title mt-10">
+                    <div class="col-4">
+                        <p class="mini-heading fs-14 mb-10 font-weight-normal">Flockman Name</p>
+                    </div>
+                    <div class="col-4">
+                        <p class="mini-heading fs-14 mb-10 font-weight-normal">Total Egg Prod</p>
+                    </div>
+                    <div class="col-4">
+                        <p class="mini-heading fs-14 mb-10 font-weight-normal">Prod Rate</p>
+                    </div>
+                    <!-- <div class="col-3">
+                        <p class="mini-heading fs-14 mb-10 font-weight-normal">Action</p>
+                    </div> -->
+                </div>
+                <div class="row pl-10 pr-10 meds-cont">
+                    <ng-container *ngIf="harvest_production_status_data">
+                        <ng-container *ngFor="let item of harvest_production_status_data; let i = index">
+                            <div class="col-4">
+                                <p class="mini-heading mb-10 mt-10 fs-14 font-weight-normal">{{ item.first_name }} {{ item.last_name }}</p>
+                            </div>
+                            <div class="col-4">
+                                <p class="mini-heading mb-10 mt-10 fs-14 font-weight-normal">{{ item.total_egg_production ? (item.total_egg_production | number) : 0 }}</p>
+                            </div>
+                            <div class="col-4">
+                                <p class="mini-heading mb-10 mt-10 fs-14 font-weight-normal">{{ item.production_rate ? (item.production_rate | number : '1.2-2') : 0 }} %</p>
+                            </div>
+                            <!-- <div class="col-3">
+                                <button type="button" mat-flat-button class="btn btn-clear btn-sm btn-block pl-0">
+                                    <i class="icon-eye"></i>
+                                    View Report
+                                </button>
+                            </div> -->
+                        </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="!harvest_production_status_data">
+                        <div class="col-12 text-center">
+                            <p class="sub-heading mt-15">No record found</p>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 mb-20">
+            <div class="container-card p-20">
+                <div class="flex-align-center">
+                    <p class="mini-heading mb-0 fs-14">Harvest Production Rate per houses</p>
+                    <button type="button" mat-flat-button class="btn btn-clear btn-sm ml-auto" [routerLink]="['/performance-report/harvested/production-per-house']">
+                        <span class="mr-15">View more</span>
+                        <i class=icon-proceed></i>
+                    </button>
+                </div>
+                <div class="row mt-10" *ngIf="harvest_rate_data && harvest_rate_data.length > 0">
+                    <div class="col-12">
+                        <canvas baseChart
+                            [datasets]="barChartData2"
+                            [labels]="barChartLabels2"
+                            [options]="barChartOptions2"
+                            [plugins]="barChartPlugins2"
+                            [legend]="barChartLegend2"
+                            [chartType]="barChartType2">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 mb-20">
+            <div class="container-card p-20">
+                <div class="flex-align-center">
+                    <p class="mini-heading mb-0 fs-14">Recent Transactions</p>
+                    <button type="button" mat-flat-button class="btn btn-clear btn-sm ml-auto" [routerLink]="['/transactions']">
+                        <span class="mr-15">View more</span>
+                        <i class=icon-proceed></i>
+                    </button>
+                </div>
+                <div class="row pl-10 pr-10 meds-title mt-10">
+                    <div class="col-3">
+                        <p class="mini-heading fs-14 mb-10 font-weight-normal">Order no.</p>
+                    </div>
+                    <div class="col-4">
+                        <p class="mini-heading fs-14 mb-10 font-weight-normal">Customer Name</p>
+                    </div>
+                    <div class="col-3">
+                        <p class="mini-heading fs-14 mb-10 font-weight-normal">Status</p>
+                    </div>
+                    <div class="col-2">
+                        <p class="mini-heading fs-14 mb-10 font-weight-normal">Date</p>
+                    </div>
+                </div>
+                <div class="row pl-10 pr-10 meds-cont scrollable h-300">
+                    <ng-container *ngIf="recent_transactions_data">
+                        <ng-container *ngFor="let item of recent_transactions_data; let i = index">
+                            <div class="col-3">
+                                <p class="mini-heading mb-10 mt-10 fs-14 font-weight-normal">{{ item.transaction_id }}</p>
+                            </div>
+                            <div class="col-4">
+                                <p class="mini-heading mb-10 mt-10 fs-14 font-weight-normal">{{ item.customer_name }}</p>
+                            </div>
+                            <div class="col-3">
+                                <p class="mini-heading mb-10 mt-10 fs-14 font-weight-normal">{{ item.status }}</p>
+                            </div>
+                            <div class="col-2">
+                                <p class="mini-heading mb-10 mt-10 fs-14 font-weight-normal">{{ item.created_at | timezone | date : 'LLL dd, yyyy' }}</p>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="!recent_transactions_data">
+                        <div class="col-12 text-center">
+                            <p class="sub-heading align-center">No record found</p>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 mb-20">
+            <div class="container-card p-20">
+                <div class="flex-align-center">
+                    <p class="mini-heading mb-0 fs-14">Recent Staff Activities</p>
+                    <!-- <button type="button" mat-flat-button class="btn btn-clear btn-sm ml-auto" [routerLink]="['/performance-report/consumption/feeds']">
+                        <span class="mr-15">View more</span>
+                        <i class=icon-proceed></i>
+                    </button> -->
+                </div>
+                <div class="row pl-10 pr-10 meds-title mt-10">
+                    <div class="col-3">
+                        <p class="mini-heading fs-14 mb-10 font-weight-normal">Name</p>
+                    </div>
+                    <div class="col-6">
+                        <p class="mini-heading fs-14 mb-10 font-weight-normal">Activity</p>
+                    </div>
+                    <div class="col-3">
+                        <p class="mini-heading fs-14 mb-10 font-weight-normal">Date</p>
+                    </div>
+                </div>
+                <div class="row pl-10 pr-10 meds-cont scrollable h-300">
+                    <ng-container *ngIf="staff_activities_data">
+                        <ng-container *ngFor="let item of staff_activities_data; let i = index">
+<!--                                 <div class="col-12">
+                                <p class="mini-heading mb-14 mt-14 fs-14 font-weight-normal">{{ i }}</p>
+                            </div> -->
+                            <div class="col-3">
+                                <p class="mini-heading mb-10 mt-10 fs-14 font-weight-normal">{{ item.name }}</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="mini-heading mb-10 mt-10 fs-14 font-weight-normal" [innerHTML]="item.action"></p>
+                            </div>
+                            <div class="col-3">
+                                <p class="mini-heading mb-10 mt-10 fs-14 font-weight-normal">{{ item.created_at | timezone | date: 'MM/dd/yyyy, hh:mm aaa' }}</p>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="!staff_activities_data">
+                        <div class="col-12 text-center">
+                            <p class="sub-heading align-center">No record found</p>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

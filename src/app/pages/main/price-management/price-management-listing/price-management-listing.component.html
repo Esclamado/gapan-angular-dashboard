@@ -1,0 +1,243 @@
+<section class="main-container p-20">
+    <div class="row mb-20">
+        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12">
+            <h1 class="heading">Egg Price Management</h1>
+            <ng-container *ngIf="showtimeago">
+                <p class="sub-heading italic mb-0" *ngIf="activity && activity.updated_at">last updated {{ activity.updated_at | timeago }}</p>
+                <ngx-skeleton-loader *ngIf="!activity || !activity.updated_at" [theme]="{
+                    'border-radius' : '5px',
+                    'margin-bottom' : '10px',
+                    'height' : '20px'
+                }"></ngx-skeleton-loader>
+            </ng-container>
+        </div>
+        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6 col-6 ml-auto">
+            <mat-spinner-button (btnClick)="downloadModal()" [options]="btnOps_pdf"></mat-spinner-button>
+        </div>
+        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6 col-6">
+            <mat-spinner-button (btnClick)="exportToCsv()" [options]="btnOps_csv"></mat-spinner-button>
+        </div>
+        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6 col-6">
+          <mat-spinner-button (btnClick)="newEgg()" [options]="btnOps"></mat-spinner-button>
+        </div>
+    </div>
+    <div class="container-card p-20 mb-20" *ngIf="show_filter">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="card-heading">Filters</h6>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-10 col-lg-9 col-md-9 col-sm-12 col-12">
+                <div class="row">
+                    <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12">
+                        <div class="form-group mb-0">
+                            <mat-select class="btn btn-drop-down btn-sm btn-block text-left" [(ngModel)]="type" (selectionChange)="changeType($event)" placeholder="Egg Size">
+                                <mat-option *ngFor="let egg_type of egg_type_options" [value]="egg_type.id">{{ egg_type.type }}</mat-option>
+                            </mat-select>
+                        </div>
+                    </div>
+                    <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12">
+                        <div class="form-group mb-0">
+                            <input [satDatepicker]="created_at_picker" [max]="max_date" class="w-0 p-0 border-0" (dateChange)="chooseCreatedAt($event)" [(ngModel)]="created_at">
+                            <sat-datepicker #created_at_picker [rangeMode]="true"></sat-datepicker>
+                            <button type="button" mat-flat-button class="btn btn-drop-down btn-sm btn-block text-left" (click)="created_at_picker.open()">{{ from && to ? 'Date Range - ' + (from | timezone | date: 'MM/dd/yyyy') + ' - ' + (to | timezone | date: 'MM/dd/yyyy') : 'Date Range' }}
+                                <i class="icon-arrow-drop-down ml-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12 ml-auto">
+                <div class="form-group mb-0">
+                    <button type="button" mat-flat-button class="btn btn-sm btn-clear btn-block" (click)="clearFilters()">
+                        Clear Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-card p-20">
+      <div class="row">
+        <div class="col-xl-5 col-lg-3 col-md-12 col-sm-12 col-12">
+          <div class="form-group mb-20">
+            <div class="inner-group in-line">
+              <label class="mr-15">Show</label>
+              <mat-select class="btn btn-drop-down text-left mr-15" [(ngModel)]="limit" (selectionChange)="changeLimit($event)" *ngIf="totalItems >= 10">
+                  <mat-option *ngFor="let limit of limits" [value]="limit.value">{{ limit.label }}</mat-option>
+              </mat-select>
+              <mat-select class="btn btn-drop-down text-left mr-15" [(ngModel)]="limit_disabled" *ngIf="totalItems < 10" disabled>
+                  <mat-option [value]="limit_disabled">{{ limit_disabled }}</mat-option>
+              </mat-select>
+              <label>of {{ totalItems | number }} entries</label>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-12">
+            <div class="form-group mb-20">
+                <div class="inner-group">
+                  <mat-select multiple class="btn btn-block btn-primary multiple-select" (selectionChange)="changeColumnVisibility($event)" placeholder="Column Visibility" [(ngModel)]="visible_columns">
+                    <mat-select-trigger>Column Visibility</mat-select-trigger>
+                    <ng-container *ngFor="let item of ths; let i = index">
+                      <mat-option [value]="i" [ngClass]="{ 'd-none' : !item.canToggle }">{{ item.label }}</mat-option>
+                    </ng-container>
+                  </mat-select>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-5 col-8">
+          <div class="form-group mb-20">
+            <div class="inner-group search">
+              <i class="icon-search"></i>
+              <input type="text" class="form-control" id="inputSearch" placeholder="Search egg type" [(ngModel)]="search"
+                (keydown.enter)="searchItem()" />
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-3 col-4">
+          <div class="form-group mb-20">
+            <button type="button" mat-flat-button class="btn btn-block" [ngClass]="{'btn-primary' : !show_filter, 'btn-secondary' : show_filter}" (click)="showFilter()">
+              <i [ngClass]="{'icon-filter-inactive' : !show_filter, 'icon-filter-active' : show_filter}"></i>
+              <span class="ml-15 d-xl-inline d-lg-inline d-md-inline d-sm-none d-none">{{ show_filter ? 'Hide Filter' : 'Show Filter' }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <ng-container *ngIf="!isLoaded">
+        <div class="data-table p-relative table-listing" style="overflow: auto;">
+          <table [ngStyle]="{'width.px': 200 * visible_columns.length}">
+            <thead>
+              <tr>
+                <ng-container *ngFor="let th of ths; let i = index">
+                  <th *ngIf="th.isVisible" [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                    {{ th.label }}
+                    <ng-container *ngIf="th.canSort">
+                      <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                      <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                    </ng-container>
+                  </th>
+                </ng-container>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let x of counter(visible_columns.length);">
+                <td class="text-uppercase" *ngFor="let x of counter(visible_columns.length); let i = index">
+                  <ngx-skeleton-loader [theme]="{
+                    'border-radius' : '5px',
+                    'margin-bottom' : '0px',
+                    'height' : '20px'
+                  }"></ngx-skeleton-loader>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <ng-container *ngFor="let th of ths; let i = index">
+                  <th *ngIf="th.isVisible" [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                    {{ th.label }}
+                    <ng-container *ngIf="th.canSort">
+                      <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                      <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                    </ng-container>
+                  </th>
+                </ng-container>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="visible_columns.length > 1 && isLoaded && items.length > 0">
+        <div class="data-table p-relative table-listing" style="overflow: auto;">
+          <table [ngStyle]="{'width.px': 200 * visible_columns.length}">
+            <thead>
+              <tr>
+                <ng-container *ngFor="let th of ths; let i = index">
+                  <th *ngIf="th.isVisible" [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                    {{ th.label }}
+                    <ng-container *ngIf="th.canSort">
+                      <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                      <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                    </ng-container>
+                  </th>
+                </ng-container>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of items; let i = index">
+                <td *ngIf="ths[0].isVisible">{{ item.egg_type_type }}</td>
+                <td *ngIf="ths[1].isVisible" class="text-right">₱ {{ item.per_piece | number : '1.2-2' }}</td>
+                <td *ngIf="ths[2].isVisible" class="text-right">₱ {{ item.per_tray | number : '1.2-2' }}</td>
+                <td *ngIf="ths[3].isVisible" class="text-right">₱ {{ item.per_case | number : '1.2-2' }}</td>
+                <td *ngIf="ths[4].isVisible">{{ item.updated_at | timezone | date: 'MM/dd/yyyy' }}</td>
+                <td *ngIf="ths[5].isVisible">
+                    <button type="button" mat-flat-button class="btn btn-clear text-blue" [routerLink]="[ '/price-management/view', item.egg_type_id]">
+                        <i class="icon-price-trend"></i>
+                        View price trend
+                      </button>
+                  <button type="button" mat-flat-button class="btn btn-clear" (click)="openModal(item)">
+                    <i class="icon-edit"></i>
+                    Update price
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <ng-container *ngFor="let th of ths; let i = index">
+                  <th *ngIf="th.isVisible" [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                    {{ th.label }}
+                    <ng-container *ngIf="th.canSort">
+                      <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                      <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                    </ng-container>
+                  </th>
+                </ng-container>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="visible_columns.length > 1 && isLoaded && items.length == 0">
+        <div class="row h-300">
+          <div class="col-12 text-center">
+            <p class="mb-0 align-center">No Results found</p>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="isLoaded && visible_columns.length == 1">
+        <div class="row">
+          <div class="col-12 text-center">
+            <p class="mb-0">Please choose column visibility</p>
+          </div>
+        </div>
+      </ng-container>
+      <div class="row mt-20">
+        <div class="col-xl-5 col-lg-3 col-md-12 col-sm-12 col-12">
+          <div class="form-group mb-0">
+            <div class="inner-group in-line">
+              <label class="mr-15">Show</label>
+              <mat-select class="btn btn-drop-down text-left mr-15" [(ngModel)]="limit" (selectionChange)="changeLimit($event)" *ngIf="totalItems >= 10">
+                  <mat-option *ngFor="let limit of limits" [value]="limit.value">{{ limit.label }}</mat-option>
+              </mat-select>
+              <mat-select class="btn btn-drop-down text-left mr-15" [(ngModel)]="limit_disabled" *ngIf="totalItems < 10" disabled>
+                  <mat-option [value]="limit_disabled">{{ limit_disabled }}</mat-option>
+              </mat-select>
+              <label>of {{ totalItems | number }} entries</label>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-7 col-lg-9 col-md-12 col-sm-12 col-12">
+          <mat-paginator
+            [length]="totalItems"
+            [pageSize]="limit"
+            [hidePageSize]="true"
+            [showFirstLastButtons]="true"
+            (page)="gotoPage($event)"
+            [pageIndex]="page - 1"
+          >
+          </mat-paginator>
+        </div>
+      </div>
+    </div>
+  </section>  

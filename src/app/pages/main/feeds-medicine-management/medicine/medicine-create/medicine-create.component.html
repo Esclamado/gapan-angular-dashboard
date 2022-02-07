@@ -1,0 +1,145 @@
+<section class="main-container p-20">
+    <div class="row mb-20">
+        <div class="col-xl-auto offset-xl-2">
+            <button type="button" mat-flat-button class="btn btn-sm btn-secondary" (click)="goBack('go_back', 'medicine_create')">
+                <i class="icon-back"></i>
+                <span class="ml-15">Go back to list</span>
+            </button>
+        </div>
+    </div>
+    <div class="row mb-20">
+        <div class="col-xl-8 offset-xl-2">
+            <h1 class="heading mb-0">Add new medicine</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-8 offset-xl-2">
+            <div class="container-card view-record">
+                <form [formGroup]="medicineForm">
+                    <div class="p-20">
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="text-secondary">Medicine Name <span class="required">*</span></label>
+                                    <input class="form-control mb-10" type="text" formControlName="medicine"/>
+                                    <ng-container *ngIf="medicineForm.controls.medicine.touched">
+                                        <p class="text-danger" *ngIf="medicineForm.controls.medicine.hasError('required')">Medicine name is required</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group row">
+                                    <div class="col-12">
+                                        <label class="text-secondary">Unit <span class="required">*</span></label>
+                                    </div>
+                                    <div class="col-10">
+                                        <mat-select class="btn btn-drop-down btn-block text-left" formControlName="unit_id" placeholder="Select a unit of measurement">
+                                            <mat-option *ngFor="let unit of units" [value]="unit.id">{{ unit.unit }}</mat-option>
+                                        </mat-select>
+                                    </div>
+                                    <div class="col-2 pl-0">
+                                        <button type="button" mat-flat-button class="btn btn-primary btn-block" (click)="openModal()">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                        <!-- <mat-spinner-button (btnClick)="openModal()" [options]="btnOps_unit"></mat-spinner-button> -->
+                                    </div>
+                                    <ng-container *ngIf="medicineForm.controls.unit_id.touched">
+                                        <div class="col-12">
+                                            <p class="text-danger mt-10" *ngIf="medicineForm.controls.unit_id.hasError('required')">Unit is required</p>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="text-secondary">Net weight <span class="required">*</span></label>
+                                    <input class="form-control mb-10" type="number" min="0" step="0.01" formControlName="net_weight" placeholder="0"/>
+                                    <ng-container *ngIf="medicineForm.controls.net_weight.touched">
+                                        <p class="text-danger" *ngIf="medicineForm.controls.net_weight.hasError('required')">Net weight is required</p>
+                                        <p class="text-danger" *ngIf="medicineForm.controls.net_weight.hasError('min')">Net weight must not be less than 0</p>
+                                        <p class="text-danger" *ngIf="medicineForm.controls.net_weight.hasError('max')">Net weight must not exceed 10 digits</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="text-secondary">No. of Orders <span class="required">*</span></label>
+                                    <div class="input-group">
+                                        <input class="form-control" type="number" min="0" step="0.01" formControlName="pieces" placeholder="0"/>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">pcs</span>
+                                        </div>
+                                    </div>
+                                    <ng-container *ngIf="medicineForm.controls.pieces.touched">
+                                        <p class="text-danger mt-10" *ngIf="medicineForm.controls.pieces.hasError('required')">Number of orders is required</p>
+                                        <p class="text-danger mt-10" *ngIf="medicineForm.controls.pieces.hasError('min')">Number of orders must not be less than 0</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group p-relative">
+                                    <label class="text-secondary">Delivery Date <span class="required">*</span></label>
+                                    <input matInput [max]="max_date" [matDatepicker]="delivery_date_picker" placeholder="mm/dd/yyyy" formControlName="delivery_date" class="form-control mb-10">
+                                    <mat-datepicker-toggle matSuffix [for]="delivery_date_picker" class="p-absolute r-0 t-27"></mat-datepicker-toggle>
+                                    <mat-datepicker #delivery_date_picker></mat-datepicker>
+                                    <ng-container *ngIf="medicineForm.controls.delivery_date.touched">
+                                        <p class="text-danger" *ngIf="medicineForm.controls.delivery_date.hasError('required')">Delivery date is required</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="text-secondary">Unit Price <span class="required">*</span></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Php</span>
+                                        </div>
+                                        <input class="form-control" type="number" min="0" step="0.01" formControlName="unit_price" placeholder="0.00"/>
+                                    </div>
+                                    <ng-container *ngIf="medicineForm.controls.unit_price.touched">
+                                        <p class="text-danger mt-10" *ngIf="medicineForm.controls.unit_price.hasError('required')">Price is required</p>
+                                        <p class="text-danger mt-10" *ngIf="medicineForm.controls.unit_price.hasError('min')">Price must not be less than 0</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group p-relative">
+                                    <label class="text-secondary">Expiration Date <span class="required">*</span></label>
+                                    <input matInput [min]="min_date" [matDatepicker]="expiration_date_picker" placeholder="mm/dd/yyyy" formControlName="expiration_date" class="form-control mb-10">
+                                    <mat-datepicker-toggle matSuffix [for]="expiration_date_picker" class="p-absolute r-0 t-27"></mat-datepicker-toggle>
+                                    <mat-datepicker #expiration_date_picker></mat-datepicker>
+                                    <ng-container *ngIf="medicineForm.controls.expiration_date.touched">
+                                        <p class="text-danger" *ngIf="medicineForm.controls.expiration_date.hasError('required')">Expiration date is required</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group mb-0">
+                                    <label class="text-secondary">Remarks</label>
+                                    <textarea class="form-control mb-10" rows="3" maxlength="250" formControlName="remarks"></textarea>
+                                    <ng-container *ngIf="medicineForm.controls.remarks.touched">
+                                        <p class="text-danger" *ngIf="medicineForm.controls.remarks.hasError('maxlength')">Remarks should not exceed 250 characters</p>
+                                    </ng-container>
+                                    <p class="text-right text-secondary mb-0">{{ medicineForm.controls.remarks.value.length }}/250</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="m-0">
+                    <div class="p-20">
+                        <div class="row">
+                            <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6 ml-xl-auto ml-lg-auto ml-md-auto">
+                                <button type="button" mat-flat-button class="btn btn-clear btn-block" (click)="goBack('form_cancel', 'medicine_create')">
+                                    Cancel
+                                </button>
+                            </div>
+                            <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6">
+                                <mat-spinner-button (btnClick)="openModal(medicineForm.value, 'medicine_save')" [options]="btnOps" [disabled]="!medicineForm.valid"></mat-spinner-button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

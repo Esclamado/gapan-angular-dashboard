@@ -1,0 +1,16 @@
+@import "./../../../../../assets/scss/colors.scss";
+@import "./../../../../../assets/scss/fonts.scss";
+.select-type{
+    padding: 12px 31px;
+    background: color(container, border);
+    border-radius: 2px 0px 0px 2px;
+    width: fit-content;
+    border-bottom: 2px solid color(font);
+    p{
+        color: color(font);
+    }
+}
+.alt{
+    /* background: color(container, border) !important; */
+    background: rgba(229, 229, 229, 0.4) !important;
+}

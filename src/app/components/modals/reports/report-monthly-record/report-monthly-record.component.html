@@ -1,0 +1,245 @@
+<ngx-spinner
+    type="ball-pulse"
+></ngx-spinner>
+<div class="container-card view-record p-20">
+    <div id="printable-section">
+        <div class="border">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                    <h3 class="mt-10">Gapan Fresh Eggs, Inc.</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                    <h5 class="mb-20">Monthly Record</h5>
+                </div>
+            </div>
+            <div class="row pb-10 ml-0 mr-0 border-bottom">
+                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                    <p class="mb-0 fs-14">Prepared by:</p>
+                </div>
+                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                    <p class="mb-0 fs-14">{{ user_profile.user_profile.first_name }} {{ user_profile.user_profile.last_name }}</p>
+                </div>
+                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto ml-auto">
+                    <p class="mb-0 fs-14">Date:</p>
+                </div>
+                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                    <p class="mb-0 fs-14">{{ date_today | timezone | date : 'MMM dd, yyyy' }}</p>
+                </div>
+            </div>
+
+            <div class="row ml-0 mr-0">
+                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-9 col-9 p-0">
+                    <h1 class="heading m-20">House/Building Details</h1>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="container-card view-record p-0">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="data-table p-relative table-listing" style="overflow: auto;">
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td class="w-30-per alt">House/Building</td>
+                                                <td class="w-70-per">
+                                                    <ng-container *ngIf="isLoaded">{{ house_data.house }}</ng-container>
+                                                    <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                        'border-radius': '5px',
+                                                        'margin-bottom': '0px',
+                                                        'height': '20px',
+                                                        'width': '50%'
+                                                    }"></ngx-skeleton-loader>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-30-per alt">Daily Report Progress</td>
+                                                <td class="w-70-per">
+                                                    <ng-container *ngIf="isLoaded">{{ house_data.daily_report_progress }}</ng-container>
+                                                    <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                        'border-radius': '5px',
+                                                        'margin-bottom': '0px',
+                                                        'height': '20px',
+                                                        'width': '50%'
+                                                    }"></ngx-skeleton-loader>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-30-per alt">Month</td>
+                                                <td class="w-70-per">
+                                                    <ng-container *ngIf="isLoaded">{{ house_data.current_age_of_chicken ? (house_data.current_age_of_chicken.created_at | timezone | date : 'MMMM') : '' }}</ng-container>
+                                                    <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                        'border-radius': '5px',
+                                                        'margin-bottom': '0px',
+                                                        'height': '20px',
+                                                        'width': '50%'
+                                                    }"></ngx-skeleton-loader>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-30-per alt">Year</td>
+                                                <td class="w-70-per">
+                                                    <ng-container *ngIf="isLoaded">{{ house_data.current_age_of_chicken ? (house_data.current_age_of_chicken.created_at | timezone | date : 'yyyy') : '' }}</ng-container>
+                                                    <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                        'border-radius': '5px',
+                                                        'margin-bottom': '0px',
+                                                        'height': '20px',
+                                                        'width': '50%'
+                                                    }"></ngx-skeleton-loader>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-30-per alt">Beginning Population of Chickens</td>
+                                                <td class="w-70-per">
+                                                    <ng-container *ngIf="isLoaded">{{ house_data.beginning_population }}</ng-container>
+                                                    <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                        'border-radius': '5px',
+                                                        'margin-bottom': '0px',
+                                                        'height': '20px',
+                                                        'width': '50%'
+                                                    }"></ngx-skeleton-loader>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-30-per alt">Age of Chickens</td>
+                                                <td class="w-70-per">
+                                                    <ng-container *ngIf="isLoaded">{{ house_data.age_chicken.age }}</ng-container>
+                                                    <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                        'border-radius': '5px',
+                                                        'margin-bottom': '0px',
+                                                        'height': '20px',
+                                                        'width': '50%'
+                                                    }"></ngx-skeleton-loader>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row ml-0 mr-0">
+                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-9 col-9 p-0">
+                    <h1 class="heading m-20">Feeds and Medicine Consumption Daily Report</h1>
+                </div>
+            </div>
+        
+            <div class="container-card p-0">
+                <ng-container *ngIf="visible_columns.length > 0">
+                    <div class="data-table p-relative table-listing" style="overflow: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <ng-container *ngFor="let th of ths; let i = index">
+                                        <th class="p-10 fs-12">{{ th.label }}</th>
+                                    </ng-container>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngIf="isLoaded && feeds_and_medicine.length > 0">
+                                    <ng-container *ngFor="let feeds_medicine of feeds_and_medicine; let i = index">
+                                        <tr>
+                                            <td *ngIf="ths[0].isVisible" class="p-10 fs-12">{{ feeds_medicine.created_at | timezone | date: 'd' }}</td>
+                                            <td *ngIf="ths[1].isVisible" class="p-10 fs-12">
+                                                {{ feeds_medicine.age_week > 1 ? feeds_medicine.age_week+' weeks' : feeds_medicine.age_week+' week' }},
+                                                {{ feeds_medicine.age_day > 1 ? feeds_medicine.age_day+' days' : feeds_medicine.age_day+' day' }}</td>
+                                            <td *ngIf="ths[2].isVisible" class="p-10 fs-12">{{ feeds_medicine.mortality }}</td>
+                                            <td *ngIf="ths[3].isVisible" class="p-10 fs-12">{{ feeds_medicine.mortality_rate | percent:'1.1-2' }}</td>
+                                            <td *ngIf="ths[4].isVisible" class="p-10 fs-12">{{ feeds_medicine.cull }}</td>
+                                            <td *ngIf="ths[5].isVisible" class="p-10 fs-12">{{ feeds_medicine.end_bird_population }}</td>
+                                            <td *ngIf="ths[6].isVisible" class="p-10 fs-12">{{ feeds_medicine.egg_count | number }}</td>
+                                            <td *ngIf="ths[7].isVisible" class="p-10 fs-12">{{ feeds_medicine.real_egg_count }}</td>
+                                            <td *ngIf="ths[8].isVisible" class="p-10 fs-12">{{ feeds_medicine.production_rate | number:'2.1-2' }}%</td>
+                                            <td *ngIf="ths[9].isVisible" class="p-10 fs-12">
+                                                {{ feeds_medicine.feed_info ? feeds_medicine.feed_info.feed : '' }} ({{ feeds_medicine.feed_consumption }} g)</td>
+                                            <td *ngIf="ths[10].isVisible" class="p-10 fs-12">{{ feeds_medicine.feeds ? feeds_medicine.feeds.string : '' }}</td>
+                                            <td *ngIf="ths[11].isVisible" class="p-10 fs-12">{{ feeds_medicine.feed_info ? feeds_medicine.feed_info.feed : '' }} ({{ feeds_medicine.rec_feed_consumption }} g)</td>
+                                            <td *ngIf="ths[12].isVisible" class="p-10 fs-12">{{ feeds_medicine.req_feeds ? feeds_medicine.req_feeds.string : '' }}</td>
+                                            <td *ngIf="ths[13].isVisible" class="p-10 fs-12">
+                                                <ng-container *ngFor="let med of feeds_medicine.medicine_name; let m = index">
+                                                    {{ med.medicine }} ({{ med.medicine_value }} {{ med.medicine_unit.unit }}){{ m < feeds_medicine.medicine_name.length - 1 ? ',' : '' }}<br *ngIf="m < feeds_medicine.medicine_name.length - 1">
+                                                </ng-container>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                </ng-container>
+        <!--                         <ng-container *ngIf="!isLoaded">
+                                    <tr>
+                                        <td class="text-uppercase" *ngFor="let x of counter(visible_columns.length); let i = index">
+                                            <ngx-skeleton-loader [theme]="{
+                                                'border-radius' : '5px',
+                                                'margin-bottom' : '0px',
+                                                'height' : '20px'
+                                            }"></ngx-skeleton-loader>
+                                        </td>
+                                    </tr>
+                                </ng-container> -->
+                                <ng-container *ngIf="isLoaded && feeds_and_medicine.length == 0">
+                                    <tr>
+                                        <td [attr.colspan]="visible_columns.length" class="text-center">No Results found</td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <ng-container *ngFor="let th of ths; let i = index">
+                                        <th class="p-10 fs-12">{{ th.label }}</th>
+                                    </ng-container>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="isLoaded && visible_columns.length == 0">
+                    <div class="row">
+                        <div class="col-12 col-lg-4 text-center">
+                            <p class="mb-0">Please choose column visibility</p>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+
+
+            <div class="row ml-0 mr-0 border-bottom">
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                    <div class="row">
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto mt-40">
+                            <p class="fw-500 fs-14">Prepared By:</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8 text-center mt-40">
+                            <p class="mb-0 fs-14">{{ user_profile.user_profile.first_name }} {{ user_profile.user_profile.last_name }}</p>
+                            <hr class="m-0">
+                            <p class="fs-12">Signature over Printed Name</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 ml-auto">
+                    <div class="row">
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto mt-40">
+                            <p class="fw-500 fs-14">Approved By:</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8 text-center mt-40">
+                            <p class="mb-0 h-22"></p>
+                            <hr class="m-0">
+                            <p class="fs-12">Signature over Printed Name</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-20">
+        <div class="col-xl-auto">
+            <mat-spinner-button (btnClick)="exportPdf('pdf')" [options]="btnOps" [disabled]="!isLoaded"></mat-spinner-button>
+        </div>
+    </div>
+</div>

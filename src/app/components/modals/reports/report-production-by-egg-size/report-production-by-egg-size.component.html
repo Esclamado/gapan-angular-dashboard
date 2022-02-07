@@ -1,0 +1,154 @@
+<ngx-spinner
+    type="ball-pulse"
+></ngx-spinner>
+<div class="container-card view-record p-20">
+    <div id="printable-section">
+        <div class="border">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                    <h3 class="mt-10">Gapan Fresh Eggs, Inc.</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                    <h5 class="mb-20">Harvested Production By Egg Sizes</h5>
+                </div>
+            </div>
+            <div class="row pb-10 ml-0 mr-0 border-bottom">
+                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                    <p class="mb-0 fs-14">Prepared by:</p>
+                </div>
+                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                    <p class="mb-0 fs-14" *ngIf="isLoaded">{{ user_profile.user_profile.first_name }} {{ user_profile.user_profile.last_name }}</p>
+                    <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                        'border-radius' : '5px',
+                        'margin-bottom' : '10px',
+                        'height' : '20px'
+                    }"></ngx-skeleton-loader>
+                </div>
+                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto ml-auto">
+                    <p class="mb-0 fs-14">Date:</p>
+                </div>
+                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                    <p class="mb-0 fs-14">{{ date_today | timezone | date : 'MMM dd, yyyy' }}</p>
+                </div>
+            </div>
+            <div class="row mb-20 mt-10 ml-0 mr-0">
+                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                    <p class="mb-5 fs-14">Overall Harvested Eggs</p>
+                    <h1 class="heading fs-34">{{ overall_harvested_eggs | number }}</h1>
+                </div>
+            </div>
+            <div class="row mb-20 ml-0 mr-0 break-now" *ngIf="isLoaded && items.length > 0 && visible_columns.length > 0">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-20">
+                    <canvas baseChart 
+                        [datasets]="barChartData"
+                        [labels]="barChartLabels"
+                        [options]="barChartOptions"
+                        [plugins]="barChartPlugins"
+                        [legend]="barChartLegend"
+                        [chartType]="barChartType"
+                    >
+                    </canvas>
+                </div>
+                <!-- <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                    <p>Egg Sizes</p>
+                </div> -->
+                <div *ngIf="!from && !to" class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                    <p>All Dates</p>
+                </div>
+                <!-- <div *ngIf="from && to" class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                    <p *ngIf="(from | timezone | date: 'yyyy-MM-dd') != (to | timezone | date: 'yyyy-MM-dd')">{{ from | timezone | date : 'MMMM dd, yyyy' }} - {{ to | timezone | date : 'MMMM dd, yyyy' }}</p>
+                    <p *ngIf="(from | timezone | date: 'yyyy-MM-dd') == (to | timezone | date: 'yyyy-MM-dd')">{{ from | timezone | date : 'MMMM dd, yyyy' }}</p>
+                </div> -->
+                <div *ngIf="from && to" class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                    <p>{{ from | timezone | date : 'MMMM dd, yyyy' }} - {{ to | timezone | date : 'MMMM dd, yyyy' }}</p>
+                </div>
+            </div>
+            <ng-container *ngIf="visible_columns.length > 0">
+                <div class="data-table p-relative table-listing" style="overflow: auto;">
+                    <div class="data-table p-relative table-listing" style="overflow: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="p-10 fs-12">Date</th>
+                                    <ng-container *ngFor="let th of ths; let i = index">
+                                        <th *ngIf="th.isVisible" class="p-10 fs-12">{{ th.label }}</th>
+                                    </ng-container>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngIf="isLoaded && items.length > 0">
+                                    <tr *ngFor="let item of items; let i = index">
+                                        <td class="p-10 fs-12">{{ item.grouped_date | timezone | date: 'MM/dd/yyyy' }}</td>
+                                        <ng-container *ngFor="let item of item.daily_sorting_inventory; let i = index">
+                                            <td class="p-10 fs-12" *ngIf="ths[i].isVisible">{{ item.sum | number }}</td>
+                                        </ng-container>
+                                    </tr>
+                                </ng-container>
+                                <!-- <ng-container *ngIf="!isLoaded">
+                                    <tr>
+                                    <td class="text-uppercase" *ngFor="let x of counter(visible_columns.length); let i = index">
+                                        <ngx-skeleton-loader [theme]="{
+                                        'border-radius' : '5px',
+                                        'margin-bottom' : '0px',
+                                        'height' : '20px'
+                                        }"></ngx-skeleton-loader>
+                                    </td>
+                                    </tr>
+                                </ng-container> -->
+                                <ng-container *ngIf="isLoaded && items.length == 0">
+                                    <tr>
+                                    <td [attr.colspan]="visible_columns.length + 1" class="text-center">No Results found</td>
+                                    </tr>
+                                </ng-container>
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="isLoaded && visible_columns.length == 0">
+                <div class="row">
+                    <div class="col-12 text-center">
+                    <p class="mb-0">Please choose egg type</p>
+                    </div>
+                </div>
+            </ng-container>
+            <div class="row ml-0 mr-0 mt-20 border-bottom">
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                    <div class="row">
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto mt-40">
+                            <p class="fw-500 fs-14">Prepared By:</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8 text-center mt-40">
+                            <p class="mb-0 fs-14">{{ user_profile.user_profile.first_name }} {{ user_profile.user_profile.last_name }}</p>
+                            <hr class="m-0">
+                            <p class="fs-12">Signature over Printed Name</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 ml-auto">
+                    <div class="row">
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto mt-40">
+                            <p class="fw-500 fs-14">Approved By:</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8 text-center mt-40">
+                            <p class="mb-0 h-22"></p>
+                            <hr class="m-0">
+                            <p class="fs-12">Signature over Printed Name</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-30">
+        <div class="col-xl-auto">
+            <mat-spinner-button (btnClick)="exportPdf('pdf')" [options]="btnOps" [disabled]="!isLoaded"></mat-spinner-button>
+        </div>
+    </div>
+</div>

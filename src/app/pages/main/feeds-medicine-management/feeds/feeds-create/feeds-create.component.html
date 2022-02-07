@@ -1,0 +1,143 @@
+<section class="main-container p-20">
+    <div class="row mb-20">
+        <div class="col-xl-auto offset-xl-2">
+            <button type="button" mat-flat-button class="btn btn-sm btn-secondary" (click)="goBack('go_back', 'feed_create')">
+                <i class="icon-back"></i>
+                <span class="ml-15">Go back to list</span>
+            </button>
+        </div>
+    </div>
+    <div class="row mb-20">
+        <div class="col-xl-8 offset-xl-2">
+            <h1 class="heading mb-0">Add new feed</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-8 offset-xl-2">
+            <div class="container-card view-record">
+                <form [formGroup]="feedForm" *ngIf="feedForm">
+                    <div class="p-20">
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="text-secondary">Feed Name <span class="required">*</span></label>
+                                    <input class="form-control mb-10" type="text" formControlName="feeds"/>
+                                    <ng-container *ngIf="feedForm.controls.feeds.touched">
+                                        <p class="text-danger" *ngIf="feedForm.controls.feeds.hasError('required')">Feed name is required</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6"></div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="text-secondary">Net weight of bags <span class="required">*</span></label>
+                                    <div class="input-group">
+                                        <input class="form-control" type="number" min="0.01" step="0.01" formControlName="kg_per_bag" (input)="convertWeight($event)" placeholder="0"/>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">kg</span>
+                                        </div>
+                                    </div>
+                                    <ng-container *ngIf="feedForm.controls.kg_per_bag.touched">
+                                        <p class="text-danger mt-10" *ngIf="feedForm.controls.kg_per_bag.hasError('required')">Net weight is required</p>
+                                        <p class="text-danger mt-10" *ngIf="feedForm.controls.kg_per_bag.hasError('min')">Net weight must not be less than 0</p>
+                                        <p class="text-danger mt-10" *ngIf="feedForm.controls.kg_per_bag.hasError('max')">Net weight must not exceed 10 digits</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="text-secondary">No. of Orders <span class="required">*</span></label>
+                                    <div class="input-group">
+                                        <input class="form-control" type="number" min="0" step="0.01" formControlName="pieces" placeholder="0"/>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">bags</span>
+                                        </div>
+                                    </div>
+                                    <ng-container *ngIf="feedForm.controls.pieces.touched">
+                                        <p class="text-danger mt-10" *ngIf="feedForm.controls.pieces.hasError('required')">Number of orders is required</p>
+                                        <p class="text-danger mt-10" *ngIf="feedForm.controls.pieces.hasError('min')">Number of orders must not be less than 0</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="text-secondary">Converted net weight</label>
+                                    <div class="input-group">
+                                        <input class="form-control" type="number" min="0" step="0.01" formControlName="converted" disabled placeholder="0"/>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">g</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group p-relative">
+                                    <label class="text-secondary">Delivery Date <span class="required">*</span></label>
+                                    <input matInput [max]="max_date" [matDatepicker]="delivery_date_picker" placeholder="mm/dd/yyyy" formControlName="delivery_date" class="form-control mb-10">
+                                    <mat-datepicker-toggle matSuffix [for]="delivery_date_picker" class="p-absolute r-0 t-27"></mat-datepicker-toggle>
+                                    <mat-datepicker #delivery_date_picker></mat-datepicker>
+                                    <ng-container *ngIf="feedForm.controls.delivery_date.touched">
+                                        <p class="text-danger" *ngIf="feedForm.controls.delivery_date.hasError('required')">Delivery date is required</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="text-secondary">Unit Price <span class="required">*</span></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Php</span>
+                                        </div>
+                                        <input class="form-control" type="number" min="0" step="0.01" formControlName="unit_price" placeholder="0.00"/>
+                                    </div>
+                                    <ng-container *ngIf="feedForm.controls.unit_price.touched">
+                                        <p class="text-danger mt-10" *ngIf="feedForm.controls.unit_price.hasError('required')">Price is required</p>
+                                        <p class="text-danger mt-10" *ngIf="feedForm.controls.unit_price.hasError('min')">Price must not be less than 0</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group p-relative">
+                                    <label class="text-secondary">Expiration Date <span class="required">*</span></label>
+                                    <input matInput [min]="min_date" [matDatepicker]="expiration_date_picker" placeholder="mm/dd/yyyy" formControlName="expiration_date" class="form-control mb-10">
+                                    <mat-datepicker-toggle matSuffix [for]="expiration_date_picker" class="p-absolute r-0 t-27"></mat-datepicker-toggle>
+                                    <mat-datepicker #expiration_date_picker></mat-datepicker>
+                                    <ng-container *ngIf="feedForm.controls.expiration_date.touched">
+                                        <p class="text-danger" *ngIf="feedForm.controls.expiration_date.hasError('required')">Expiration date is required</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group mb-0">
+                                    <label class="text-secondary">Remarks</label>
+                                    <textarea class="form-control mb-10" rows="3" maxlength="250" formControlName="remarks"></textarea>
+                                    <ng-container *ngIf="feedForm.controls.remarks.touched">
+                                        <p class="text-danger" *ngIf="feedForm.controls.remarks.hasError('maxlength')">Remarks should not exceed 250 characters</p>
+                                    </ng-container>
+                                    <p class="text-right text-secondary mb-0">{{ feedForm.controls.remarks.value.length }}/250</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="m-0">
+                    <div class="p-20">
+                        <div class="row">
+                            <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6 ml-xl-auto ml-lg-auto ml-md-auto">
+                                <button type="button" mat-flat-button class="btn btn-clear btn-block" (click)="goBack('form_cancel', 'feed_create')">
+                                    Cancel
+                                </button>
+                            </div>
+                            <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6">
+                                <!-- <button type="submit" mat-flat-button class="btn btn-primary btn-block" (click)="openModal(feedForm.value, 'feed_save')" [disabled]="!feedForm.valid">
+                                    <i class="icon-add"></i>
+                                    <span class="ml-15">Add Item</span>
+                                </button> -->
+                                <mat-spinner-button (btnClick)="openModal(feedForm.value, 'feed_save')" [options]="btnOps" [disabled]="!feedForm.valid"></mat-spinner-button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

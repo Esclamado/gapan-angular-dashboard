@@ -1,0 +1,81 @@
+
+
+
+
+h3{
+    font-size:1.4vw;
+    margin-top:0;
+    font-weight:500;
+}
+.col2
+{
+    position:absolute;
+    top:0;
+    left:0;
+    width:60%;
+    height:100%;
+    
+}
+.col1{
+    overflow: hidden;
+    position:absolute;
+    top:0;
+    right:0;
+    width:40%;
+    height:100%;
+    background: #fff;
+}
+// input
+// {
+//     box-sizing: border-box;
+//     width:100%;
+//     background: rgba(255,255,255,0.1);
+//     padding: 5%;
+//     font-size:1em;
+//     border:none;
+//     border-radius: 5px;
+//     color:white;
+//     margin:5px 0;
+// }
+
+.img1{
+    padding:0;
+    height: 100%;
+    width: 100%;
+    margin:0;   
+}
+span.eye
+{
+    margin-top: -3px;
+    position:relative;
+    float:right;
+    transform:translateY(-100%);
+    cursor: pointer;
+    display: block;
+}
+
+.ball1{
+    top:-5%;
+    right:-5%;
+    box-shadow:0 0 20px rgba(0,0,0,0.04);
+}
+
+.ball2{
+    bottom:-130px;
+    left:-130px;
+    box-shadow:0 0 20px rgba(0,0,0,0.04)
+}
+.custom-row{
+    width: 100%;
+    margin: 0;
+}
+.forgot-pass{
+    p{
+        color: #05172e;
+        font-size: 16px;
+        line-height: 1.428571429;
+    }
+}
+.btn-forgot{
+    color: #0097cf;
+}
