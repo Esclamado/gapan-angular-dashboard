@@ -1,0 +1,70 @@
+<div class="row">
+    <div class="col-12">
+        <h6 class="mini-heading">{{ modal_title }}</h6>
+    </div>
+</div>
+<form [formGroup]="attachmentForm" (ngSubmit)="openModal()">
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label class="text-secondary">Attachment Type</label>
+                <mat-select class="btn btn-drop-down btn-block text-left" formControlName="type" (selectionChange)="changeType($event)" placeholder="Choose attachment type">
+                    <mat-option *ngFor="let paymentattachment of paymentattachment_options" [value]="paymentattachment.value">{{ paymentattachment.label }}</mat-option>
+                </mat-select>
+            </div>
+        </div>
+    </div>
+    <div class="row" *ngIf="attachmentForm.controls.type.value == 1">
+        <div class="col-12">
+            <div class="form-group">
+                <label class="text-secondary">Enter Official Receipt no. <span class="required">*</span></label>
+                <input type="text" formControlName="attachment_no" class="form-control mb-10"/>
+                <ng-container *ngIf="attachmentForm.controls.attachment_no.touched">
+                    <p class="text-danger" *ngIf="attachmentForm.controls.attachment_no.hasError('required')">Official receipt no. is required</p>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label class="text-secondary">{{ type_label }} <span class="required">*</span></label>
+                <div class="row">
+                    <div class="col-12 mb-10" [ngClass]="{ 'd-none' : !isPhotoLoaded }">
+                        <image-cropper 
+                            class="img-responsive"
+                            [imageChangedEvent]="photo"
+                            [maintainAspectRatio]="false"
+                            format="png,jpg,jpeg,ico"
+                            (imageCropped)="imagePhotoCropped($event)"
+                            (imageLoaded)="imageLoaded()"
+                            [autoCrop]= "true"
+                        ></image-cropper>
+                    </div>
+                    <div class="col-12 mb-10" *ngIf="temp_photo">
+                        <img class="img-responsive" [src]="temp_photo"/>
+                    </div>
+                    <div class="col-auto">
+                        <input id="payment-upload" class="d-none" type="file" (change)="photoChange($event)" accept="image/jpeg, image/png"/>
+                        <label for="payment-upload" mat-flat-button class="btn btn-secondary btn-block">
+                            {{ isPhotoLoaded || temp_photo ? 'Choose another file' : 'Choose a file' }}
+                        </label>
+                    </div>
+                    <div class="col-auto flex-align-center" *ngIf="!isPhotoLoaded && !temp_photo">
+                        <p class="m-0 font-italic">No file chosen</p>
+                    </div>
+                    <p class="text-danger" *ngIf="photoUploadWrongFile">Attachment is not valid</p>
+                    <!-- <p class="text-danger" *ngIf="uploadPhotoMaxLimitReached">Attachment must not exceed 1MB</p> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6 text-right">
+            <button type="button" mat-flat-button class="btn btn-sm btn-clear" (click)="closeModal()" [disabled]="isLoading">Cancel</button>
+        </div>
+        <div class="col-6">
+            <button type="submit" mat-flat-button class="btn btn-sm btn-block" [ngClass]="{'btn-primary' : action != 'delete', 'btn-danger' : action == 'delete' }" [disabled]="(!attachmentForm.valid && action != 'delete') || isLoading">{{ modal_primary_button }}</button>
+        </div>
+    </div>
+</form>

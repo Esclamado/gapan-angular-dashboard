@@ -1,0 +1,306 @@
+<ngx-spinner
+    type="ball-pulse"
+></ngx-spinner>
+<section class="main-container p-20">
+    <div class="row mb-20">
+        <div class="col-10">
+            <h1 class="heading">View House/Building Details</h1>
+        </div>
+        <div class="col-2">
+            <button type="button" mat-flat-button class="btn btn-sm btn-secondary btn-block" (click)="goBack()">
+                <i class="icon-back"></i>
+                <span class="ml-15">Go back to list</span>
+            </button>
+        </div>
+    </div>
+    <div class="row mb-20">
+        <div class="col-9">
+            <div class="container-card view-record p-20">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="data-table p-relative table-listing" style="overflow: auto;">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td class="w-30-per alt">House/Building</td>
+                                        <td class="w-70-per">
+                                            <ng-container *ngIf="isLoaded">{{ house_data.house }}</ng-container>
+                                            <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                'border-radius': '5px',
+                                                'margin-bottom': '0px',
+                                                'height': '20px',
+                                                'width': '50%'
+                                            }"></ngx-skeleton-loader>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-30-per alt">Daily Report Progress</td>
+                                        <td class="w-70-per">
+                                            <ng-container *ngIf="isLoaded">{{ house_data.daily_report_progress }}</ng-container>
+                                            <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                'border-radius': '5px',
+                                                'margin-bottom': '0px',
+                                                'height': '20px',
+                                                'width': '50%'
+                                            }"></ngx-skeleton-loader>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-30-per alt">Month</td>
+                                        <td class="w-70-per">
+                                            <ng-container *ngIf="isLoaded">{{ house_data.current_age_of_chicken ? (house_data.current_age_of_chicken.created_at | timezone | date : 'MMMM') : '' }}</ng-container>
+                                            <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                'border-radius': '5px',
+                                                'margin-bottom': '0px',
+                                                'height': '20px',
+                                                'width': '50%'
+                                            }"></ngx-skeleton-loader>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-30-per alt">Year</td>
+                                        <td class="w-70-per">
+                                            <ng-container *ngIf="isLoaded">{{ house_data.current_age_of_chicken ? (house_data.current_age_of_chicken.created_at | timezone | date : 'yyyy') : '' }}</ng-container>
+                                            <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                'border-radius': '5px',
+                                                'margin-bottom': '0px',
+                                                'height': '20px',
+                                                'width': '50%'
+                                            }"></ngx-skeleton-loader>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-30-per alt">Beginning Population of Chickens</td>
+                                        <td class="w-70-per">
+                                            <ng-container *ngIf="isLoaded">{{ house_data.beginning_population }}</ng-container>
+                                            <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                'border-radius': '5px',
+                                                'margin-bottom': '0px',
+                                                'height': '20px',
+                                                'width': '50%'
+                                            }"></ngx-skeleton-loader>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="w-30-per alt">Age of Chickens</td>
+                                        <td class="w-70-per">
+                                            <ng-container *ngIf="isLoaded">{{ house_data.age_chicken.age }}</ng-container>
+                                            <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                'border-radius': '5px',
+                                                'margin-bottom': '0px',
+                                                'height': '20px',
+                                                'width': '50%'
+                                            }"></ngx-skeleton-loader>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-5 col-sm-6 col-12">
+            <div class="body-card p-20">
+                <h1 class="mini-heading fs-14 fw-500 mb-10">Actions</h1>
+                <p class="fs-14 action-note">Here are the actions you can apply for this order details.</p>
+                <mat-spinner-button [options]="btnOps" (btnClick)="routerLink('/feeds-medicine-consumption/update', house_id)"></mat-spinner-button>
+                <mat-spinner-button (btnClick)="removeRecord()" [options]="btnOps_delete" [disabled]="!can_delete"></mat-spinner-button>
+            </div>
+            <br>
+            <div class="body-card p-20">
+                <h1 class="mini-heading fs-14 fw-500 mb-10">Download Report</h1>
+                <p class="fs-14 action-note">You can download this report as:</p>
+                <mat-spinner-button [options]="btnOps_pdf" (btnClick)="openPdf()" [disabled]="!isLoaded"></mat-spinner-button>
+                <mat-spinner-button [options]="btnOps_csv" (btnClick)="exportToCsv()" [disabled]="!isLoaded"></mat-spinner-button>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-20">
+        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-9 col-9">
+            <h1 class="heading mb-0">Feeds and Medicine Consumption Daily Report</h1>
+        </div>
+    </div>
+    <div class="container-card p-20 mb-25" *ngIf="show_filter">
+        <div class="row">
+            <div class="col-12">
+                <h6 class="card-heading">Filters</h6>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-10 col-lg-9 col-md-9 col-sm-12 col-12">
+                <div class="row">
+                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-12 col-12">
+                        <div class="form-group">
+<!--                             <mat-select class="btn btn-drop-down btn-sm btn-block text-left" [(ngModel)]="role_id"
+                                (selectionChange)="changeRole($event)" placeholder="Staff Role">
+                                <mat-option *ngFor="let role of roles" [value]="role.value">{{ role.label }}</mat-option>
+                            </mat-select> -->
+                        </div>
+                    </div>
+                    <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12">
+                        <div class="form-group">
+<!--                             <input [satDatepicker]="created_at_picker" class="w-0 p-0 border-0"
+                                (dateChange)="chooseCreatedAt($event)" [(ngModel)]="created_at">
+                            <sat-datepicker #created_at_picker [rangeMode]="true"></sat-datepicker>
+                            <button type="button" mat-flat-button class="btn btn-drop-down btn-sm btn-block text-left"
+                                (click)="created_at_picker.open()">{{ from && to ? 'Date Added - ' + (from | timezone | date: 'MM/dd/yyyy') + ' - ' + (to | timezone | date: 'MM/dd/yyyy') : 'Date Added' }}
+                                <i class="icon-arrow-drop-down ml-5"></i>
+                            </button> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12 ml-auto">
+                <div class="form-group">
+<!--                     <button type="button" mat-flat-button class="btn btn-sm btn-clear btn-block" (click)="clearFilters()">
+                        Clear Filters
+                    </button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-card p-20">
+        <div class="row">
+            <div class="col-xl-5 col-lg-3 col-md-12 col-sm-12 col-12">
+<!--                 <div class="form-group">
+                    <div class="inner-group in-line">
+                        <label class="mr-15">Show</label>
+                        <mat-select class="btn btn-drop-down text-left mr-15" [(ngModel)]="limit"
+                            (selectionChange)="changeLimit($event)" *ngIf="totalItems >= 10">
+                            <mat-option *ngFor="let limit of limits" [value]="limit.value">{{ limit.label }}</mat-option>
+                        </mat-select>
+                        <mat-select class="btn btn-drop-down text-left mr-15" [(ngModel)]="limit_disabled"
+                            *ngIf="totalItems < 10" disabled>
+                            <mat-option [value]="limit_disabled">{{ limit_disabled }}</mat-option>
+                        </mat-select>
+                        <label>of {{ totalItems | number }} entries</label>
+                    </div>
+                </div> -->
+            </div>
+            <div class="col-xl-3 offset-xl-2 col-lg-4 offset-lg-2 col-md-8 col-sm-9 col-8">
+                <div class="form-group">
+<!--                     <div class="inner-group search">
+                        <i class="icon-search"></i>
+                        <input type="text" class="form-control" id="inputSearch" placeholder="Search" [(ngModel)]="search"
+                            (keydown.enter)="searchItem()" />
+                    </div> -->
+                </div>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-3 col-4">
+                <div class="form-group mb-20">
+<!--                     <button type="button" mat-flat-button class="btn btn-block"
+                        [ngClass]="{'btn-primary' : !show_filter, 'btn-secondary' : show_filter}" (click)="showFilter()">
+                        <i [ngClass]="{'icon-filter-inactive' : !show_filter, 'icon-filter-active' : show_filter}"></i>
+                        <span
+                            class="ml-15 d-xl-inline d-lg-inline d-md-inline d-sm-none d-none">{{ show_filter ? 'Hide Filter' : 'Show Filter' }}</span>
+                    </button> -->
+                    <div class="inner-group in-line">
+                        <mat-select multiple class="btn btn-block btn-primary multiple-select"
+                            (selectionChange)="changeColumnVisibility($event)" placeholder="Column Visibility"
+                            [(ngModel)]="visible_columns">
+                            <mat-select-trigger>Column Visibility</mat-select-trigger>
+                            <ng-container *ngFor="let item of ths; let i = index">
+                                <mat-option [value]="i" [ngClass]="{ 'd-none' : !item.canToggle }">{{ item.label }}</mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ng-container *ngIf="visible_columns.length > 0">
+            <div class="data-table p-relative table-listing" style="overflow: auto;">
+                <table [ngStyle]="{'width.px': 200 * visible_columns.length}">
+                    <thead>
+                        <tr>
+                            <ng-container *ngFor="let th of ths; let i = index">
+                                <th *ngIf="th.isVisible" [ngClass]="{ 'sort' : th.canSort }"
+                                    (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                                    {{ th.label }}
+                                    <ng-container *ngIf="th.canSort">
+                                        <i *ngIf="order.order_by_column == th.key"
+                                            [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                                        <i
+                                            [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                                    </ng-container>
+                                </th>
+                            </ng-container>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="isLoaded && feeds_and_medicine.length > 0">
+                            <ng-container *ngFor="let feeds_medicine of feeds_and_medicine; let i = index">
+                                <tr [ngClass]="dateToday > feeds_medicine.created_at || feeds_medicine.prepared_by ? 'rowActive' : '' ">
+                                    <td *ngIf="ths[0].isVisible">{{ feeds_medicine.created_at | timezone | date: 'd' }}</td>
+                                    <td *ngIf="ths[1].isVisible">
+                                        {{ feeds_medicine.age_week > 1 ? feeds_medicine.age_week+' weeks' : feeds_medicine.age_week+' week' }},
+                                        {{ feeds_medicine.age_day > 1 ? feeds_medicine.age_day+' days' : feeds_medicine.age_day+' day' }}</td>
+                                    <td *ngIf="ths[2].isVisible">{{ feeds_medicine.mortality | number }}</td>
+                                    <td *ngIf="ths[3].isVisible">{{ feeds_medicine.mortality_rate | number }} %</td>
+                                    <td *ngIf="ths[4].isVisible">{{ feeds_medicine.cull | number }}</td>
+                                    <td *ngIf="ths[5].isVisible">{{ feeds_medicine.end_bird_population | number }}</td>
+                                    <td *ngIf="ths[6].isVisible">{{ feeds_medicine.egg_count | number }}</td>
+                                    <td *ngIf="ths[7].isVisible">{{ feeds_medicine.real_egg_count | number }}</td>
+                                    <td *ngIf="ths[8].isVisible">{{ feeds_medicine.production_rate | number:'2.1-2' }}%</td>
+                                    <!-- <td [ngClass]="feeds_medicine.created_at >= dateToday ? 'activeRow' : '' " (click)="openModal(feeds_medicine, 'feed')" *ngIf="ths[9].isVisible"> -->
+                                    <td class="activeRow" (click)="openModal(feeds_medicine, 'feed')" *ngIf="ths[9].isVisible">
+                                        {{ feeds_medicine.feed_info ? feeds_medicine.feed_info.feed : '' }} ({{ feeds_medicine.feed_consumption }} g)</td>
+                                    <td *ngIf="ths[10].isVisible">{{ feeds_medicine.feeds ? feeds_medicine.feeds.string : '' }}</td>
+                                    <td *ngIf="ths[11].isVisible">{{ feeds_medicine.feed_info ? feeds_medicine.feed_info.feed : '' }} ({{ feeds_medicine.rec_feed_consumption }} g)</td>
+                                    <td *ngIf="ths[12].isVisible">{{ feeds_medicine.req_feeds ? feeds_medicine.req_feeds.string : '' }}</td>
+                                    <!-- <td *ngIf="ths[13].isVisible" [ngClass]="feeds_medicine.created_at >= dateToday ? 'activeRow' : '' " (click)="openModal(feeds_medicine, 'medicine')"> -->
+                                    <td *ngIf="ths[13].isVisible" class="activeRow" (click)="openModal(feeds_medicine, 'medicine')">
+                                        <ng-container *ngFor="let med of feeds_medicine.medicine_name; let m = index">
+                                            {{ med.medicine }} ({{ med.medicine_value }} {{ med.medicine_unit.unit }}){{ m < feeds_medicine.medicine_name.length - 1 ? ',' : '' }}<br *ngIf="m < feeds_medicine.medicine_name.length - 1">
+                                        </ng-container>
+                                    </td>
+                                    
+                                </tr>
+                            </ng-container>
+                        </ng-container>
+<!--                         <ng-container *ngIf="!isLoaded">
+                            <tr>
+                                <td class="text-uppercase" *ngFor="let x of counter(visible_columns.length); let i = index">
+                                    <ngx-skeleton-loader [theme]="{
+                                        'border-radius' : '5px',
+                                        'margin-bottom' : '0px',
+                                        'height' : '20px'
+                                    }"></ngx-skeleton-loader>
+                                </td>
+                            </tr>
+                        </ng-container> -->
+                        <ng-container *ngIf="isLoaded && feeds_and_medicine.length == 0">
+                            <tr>
+                                <td [attr.colspan]="visible_columns.length" class="text-center">No Results found</td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <ng-container *ngFor="let th of ths; let i = index">
+                                <th *ngIf="th.isVisible" [ngClass]="{ 'sort' : th.canSort }"
+                                    (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                                    {{ th.label }}
+                                    <ng-container *ngIf="th.canSort">
+                                        <i *ngIf="order.order_by_column == th.key"
+                                            [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                                        <i
+                                            [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                                    </ng-container>
+                                </th>
+                            </ng-container>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="isLoaded && visible_columns.length == 0">
+            <div class="row">
+                <div class="col-12 col-lg-4 text-center">
+                    <p class="mb-0">Please choose column visibility</p>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</section>

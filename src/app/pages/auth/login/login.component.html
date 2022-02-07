@@ -1,0 +1,72 @@
+<div class="login-container">
+  <div class="inner-container">
+    <div class="col1">
+      <div class="login-wrapper ml-100 mr-100">
+        <div class="row">
+          <div class="col-12 text-center">
+            <img class="img2" class="mt-60" src="../../../assets/images/gapan-logo.svg" alt="" width="50%"/>
+          </div>
+        </div>
+        <h3 class="fs-20 mt-26 mb-0 fw-500">Welcome to Gapan Fresh Eggs, Inc.</h3>
+        <p id="welcome" class="fs-14 lh-24 mb-0 mt-11 text-secondary">
+          Welcome back, login now to get started.
+        </p>
+        <div class="mt-20">
+          <form [formGroup]="loginForm">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="text-secondary">Email or Username</label>
+                  <input type="text" class="form-control mb-10" formControlName="email" (keydown.enter)="login()" placeholder="Enter your email or username"/>
+                  <ng-container *ngIf="loginForm.controls.email.touched">
+                    <p class="text-danger" *ngIf="loginForm.controls.email.hasError('required')">Email or username is required</p>
+                    <p class="text-danger" *ngIf="loginForm.controls.email.hasError('pattern')">Please enter a valid email address</p>
+                    <!-- <p class="text-danger" *ngIf="loginForm.controls.username.hasError('email')">Please enter a valid email address</p> -->
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label class="text-secondary">Password</label>
+                  <div class="p-relative">
+                    <input type="{{ show_password ? 'text' : 'password' }}" formControlName="password" class="form-control mb-10" (keydown.enter)="login()" placeholder="Enter your password" />
+                    <button type="button" class="btn btn-clear p-absolute t-2 r-0" (click)="showPassword()">
+                        <i [ngClass]="{ 'icon-eye-close' : !show_password, 'icon-eye-open' : show_password }"></i>
+                    </button>
+                  </div>
+                  <ng-container *ngIf="loginForm.controls.password.touched">
+                    <p class="text-danger" *ngIf="loginForm.controls.password.hasError('required')">Password is required</p>
+                    <p class="text-danger" *ngIf="loginForm.controls.password.hasError('minlength')">Password must contain at least 8 characters</p>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <mat-checkbox formControlName="remember_me">Remember me</mat-checkbox>
+                </div>
+              </div>
+              <div class="col-md-6 text-right">
+                <div class="form-group">
+                  <button class="btn btn-forgot p-0">Forgot Password?</button>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 text-right">
+                <mat-spinner-button (btnClick)="login()" [options]="btnOps" [disabled]="!loginForm.valid"></mat-spinner-button>
+                <!-- <button type="submit" mat-flat-button class="btn btn-primary btn-block fs-14 lh-24 h-46 fw-400" [disabled]="!loginForm.valid">Login</button> -->
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col2">
+      <img class="img1" src="../../../assets/images/bg.jpg" />
+    </div>
+  </div>
+</div>

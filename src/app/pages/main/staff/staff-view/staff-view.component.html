@@ -1,0 +1,348 @@
+<section class="main-container p-20">
+  <div class="row mb-20">
+      <div class="col-xl-9 col-lg-8 col-md-7 col-sm-6 col-12">
+          <h1 class="heading">View Staff Profile</h1>
+      </div>
+      <div class="col-xl-3 col-lg-4 col-md-5 col-sm-6 col-12">
+          <button type="button" mat-flat-button class="btn btn-sm btn-secondary btn-block" (click)="goBack()">
+              <i class="icon-back"></i>
+              <span class="ml-15">Go back to list</span>
+          </button>
+      </div>
+  </div>
+  <div class="row">
+    <div class="col-xl-8 col-lg-8 col-md-7 col-sm-6 col-12">
+      <div class="container-card view-record p-20">
+        <div class="row">
+          <div class="col-xl-2 offset-xl-0 col-lg-3 offset-lg-0 col-md-6 offset-md-3 col-sm-6 offset-sm-3 col-6 offset-3">
+            <img *ngIf="!isLoaded || !user_profile.profile_picture" src="../../../../../assets/images/profile.svg" class="avatar img-responsive">
+            <img *ngIf="isLoaded && user_profile.profile_picture" [src]="user_profile.profile_picture" class="avatar img-responsive">
+          </div>
+          <div class="col-xl-10 col-lg-9 col-md-12 col-sm-12 col-12 pl-0 mt-11">
+            <div class="row ml-0 mr-0">
+              <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-6 pr-0">
+                <p class="mb-5 fs-12">First Name</p>
+                <h1 class="mini-heading fw-500" *ngIf="isLoaded">{{ user_profile.profile_first_name }}</h1>
+                  <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                              'border-radius': '5px',
+                                              'margin-bottom': '0px',
+                                              'height': '20px',
+                                              'width': '50%'
+                                          }"></ngx-skeleton-loader>
+              </div>
+              <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-6 pr-0">
+                <p class="mb-5 fs-12">Last Name</p>
+                <h1 class="mini-heading fw-500" *ngIf="isLoaded">{{ user_profile.profile_last_name }}</h1>
+                  <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                              'border-radius': '5px',
+                                              'margin-bottom': '0px',
+                                              'height': '20px',
+                                              'width': '50%'
+                                          }"></ngx-skeleton-loader>
+              </div>
+              <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-6 pr-0">
+              </div>
+            </div>
+            <div class="row mt-19 ml-0 mr-0">
+              <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-6 pr-0">
+                <p class="mb-8 fs-12">User Role</p>
+                <h1 class="fs-14" *ngIf="isLoaded">{{ user_profile.user_role_label }}</h1>
+                  <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                              'border-radius': '5px',
+                                              'margin-bottom': '0px',
+                                              'height': '20px',
+                                              'width': '50%'
+                                          }"></ngx-skeleton-loader>
+              </div>
+              <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-6 pr-0">
+                <p class="mb-8 fs-12">User ID</p>
+                <h1 class="fs-14" *ngIf="isLoaded">{{ user_profile.staff_id }}</h1>
+                  <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                              'border-radius': '5px',
+                                              'margin-bottom': '0px',
+                                              'height': '20px',
+                                              'width': '50%'
+                                          }"></ngx-skeleton-loader>
+              </div>
+              <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-6 pr-0">
+                <p class="mb-8 fs-12">Mobile Number</p>
+                <h1 class="fs-14" *ngIf="isLoaded">+63{{ user_profile.contact_number }}</h1>
+                    <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                              'border-radius': '5px',
+                                              'margin-bottom': '0px',
+                                              'height': '20px',
+                                              'width': '50%'
+                                          }"></ngx-skeleton-loader>
+              </div>
+              <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-6 pr-0" *ngIf="user_profile.user_role_id == 4 || user_profile.user_role_id == 5">
+                <p class="mb-8 fs-12">Email</p>
+                <h1 class="fs-14" *ngIf="isLoaded">{{ user_profile.email }}</h1>
+                    <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                              'border-radius': '5px',
+                                              'margin-bottom': '0px',
+                                              'height': '20px',
+                                              'width': '50%'
+                                          }"></ngx-skeleton-loader>
+              </div>
+            </div>
+            <div class="row mt-19 ml-0 mr-0">
+              <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-6 pr-0">
+                <p class="mb-8 fs-12">Address</p>
+                <h1 class="fs-14" *ngIf="isLoaded">{{ user_profile.profile_location }}</h1>
+                    <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                            'border-radius': '5px',
+                                            'margin-bottom': '0px',
+                                            'height': '20px',
+                                            'width': '50%'
+                                        }"></ngx-skeleton-loader>
+              </div>
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-6 pr-0">
+                  <p class="mb-8 fs-12">Username</p>
+                  <h1 class="fs-14" *ngIf="isLoaded">{{ user_profile.username }}</h1>
+                  <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                                                'border-radius': '5px',
+                                                                'margin-bottom': '0px',
+                                                                'height': '20px',
+                                                                'width': '50%'
+                                                            }"></ngx-skeleton-loader>
+                </div>
+              <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-6 pr-0">
+                <p class="mb-8 fs-12">Password</p>
+                <div class="row">
+                  <input type="{{ show_password ? 'text' : 'password' }}" value="{{ user_profile.real_password }}" class="mb-10 ml-15 field-pasword" readonly placeholder=""/>
+                  <button type="button" class="btn btn-clear p-absolute t-2 r-0 mt-15" (click)="showPassword()">
+                    <i [ngClass]="{ 'icon-eye-close' : !show_password, 'icon-eye-open' : show_password }"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-19 ml-0 mr-0">
+              <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-6 pr-0">
+                <p class="mb-8 fs-12">Date Added</p>
+                <h1 class="fs-14" *ngIf="isLoaded">{{ user_profile.created_at | timezone | date : 'MM/dd/yyyy' }}</h1>
+                  <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                            'border-radius': '5px',
+                                            'margin-bottom': '0px',
+                                            'height': '20px',
+                                            'width': '50%'
+                                        }"></ngx-skeleton-loader>
+              </div>
+              <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-6 pr-0">
+                <p class="mb-8 fs-12">Last Login</p>
+                <h1 class="fs-14" *ngIf="isLoaded">{{ user_profile.last_login ? (user_profile.last_login | timezone | date : 'MM/dd/yyyy, hh:mm aaa') : 'Not yet logged in' }}</h1>
+                  <ngx-skeleton-loader *ngIf="!isLoaded" [theme]="{
+                                            'border-radius': '5px',
+                                            'margin-bottom': '0px',
+                                            'height': '20px',
+                                            'width': '50%'
+                                        }"></ngx-skeleton-loader>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-4 col-lg-4 col-md-5 col-sm-6 col-12">
+      <div class="body-card p-20">
+        <h1 class="mini-heading fs-14 fw-500 mb-10">Actions</h1>
+        <p class="fs-14 action-note">Here are the actions you can apply for this order details.</p>
+        <mat-spinner-button [options]="btnOps" (btnClick)="routerLink('/staffs/update', user_profile.id)"></mat-spinner-button>
+      </div>
+      <br>
+      <div class="body-card p-20">
+        <ng-container *ngIf="user_logged_in.id == user_profile.id">
+          <h1 class="mini-heading fs-14 fw-500 mb-10">Note</h1>
+          <p class="fs-14 action-note">Deleting your own account is prohibited.</p>
+          <mat-spinner-button [options]="btnOps_delete" [disabled]="true"></mat-spinner-button>
+        </ng-container>
+        <ng-container *ngIf="user_logged_in.id != user_profile.id">
+          <h1 class="mini-heading fs-14 fw-500 mb-10">Delete User?</h1>
+          <p class="fs-14 action-note">Deleting a user removes all the data on this dashboard.</p>
+          <mat-spinner-button [options]="btnOps_delete" (btnClick)="openModal(user_profile, 'user_delete')"></mat-spinner-button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="main-container p-20">
+  <div class="row mb-20">
+    <div class="col-xl-6 col-lg-6 col-md-8 col-sm-12 col-12">
+      <h1 class="heading mb-0">Activity Log</h1>
+    </div>
+  </div>
+  
+  <div class="container-card p-20 mb-25" *ngIf="show_filter">
+    <div class="row">
+      <div class="col-12">
+        <h6 class="card-heading">Filters</h6>
+      </div>
+    </div>
+  </div>
+  <div class="container-card p-20">
+    <div class="row">
+      <div class="col-xl-5 col-lg-3 col-md-12 col-sm-12 col-12">
+        <div class="form-group mb-20">
+          <div class="inner-group in-line">
+            <label class="mr-15">Show</label>
+            <mat-select class="btn btn-drop-down text-left mr-15" [(ngModel)]="limit" (selectionChange)="changeLimit($event)" *ngIf="totalItems >= 10">
+                <mat-option *ngFor="let limit of limits" [value]="limit.value">{{ limit.label }}</mat-option>
+            </mat-select>
+            <mat-select class="btn btn-drop-down text-left mr-15" [(ngModel)]="limit_disabled" *ngIf="totalItems < 10" disabled>
+                <mat-option [value]="limit_disabled">{{ limit_disabled }}</mat-option>
+            </mat-select>
+            <label>of {{ totalItems | number }} entries</label>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-12">
+        <div class="form-group mb-20">
+          <input [satDatepicker]="created_at_picker" [max]="max_date" class="w-0 p-0 border-0" (dateChange)="chooseCreatedAt($event)"
+            [(ngModel)]="created_at">
+          <sat-datepicker #created_at_picker [rangeMode]="true"></sat-datepicker>
+          <button type="button" mat-flat-button class="btn btn-drop-down btn-sm btn-block"
+            (click)="created_at_picker.open()">{{ from && to ? 'Date Created - ' + (from | timezone | date: 'MM/dd/yyyy') + ' - ' + (to | timezone | date: 'MM/dd/yyyy') : 'Date Created' }}
+            <i class="icon-arrow-drop-down ml-5"></i>
+          </button>
+        </div>
+      </div>
+      <div class="col-xl-3 col-lg-3 col-md-4 col-sm-5 col-8">
+        <div class="form-group mb-20">
+          <mat-select class="btn btn-drop-down btn-sm btn-block text-left" [(ngModel)]="code"
+            (selectionChange)="changeCode($event)" placeholder="Staff Activity">
+            <mat-option *ngFor="let code_option of code_options" [value]="code_option.value">{{ code_option.label }}</mat-option>
+          </mat-select>
+        </div>
+      </div>
+      <div class="col-xl-2 col-lg-3 col-md-4 col-sm-3 col-4">
+        <div class="form-group mb-20">
+          <button type="button" mat-flat-button class="btn btn-sm btn-clear btn-block" (click)="clearFilters()">
+            Clear Filters
+          </button>
+        </div>
+      </div>
+    </div>
+    <ng-container *ngIf="!isLoaded">
+      <div class="data-table p-relative table-listing" style="overflow: auto;">
+        <table>
+          <thead>
+            <tr>
+              <ng-container *ngFor="let th of ths; let i = index">
+                <th *ngIf="th.isVisible" [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                  {{ th.label }}
+                  <ng-container *ngIf="th.canSort">
+                    <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                    <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                  </ng-container>
+                </th>
+              </ng-container>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let x of counter(visible_columns.length);">
+              <td class="text-uppercase" *ngFor="let x of counter(visible_columns.length); let i = index">
+                <ngx-skeleton-loader [theme]="{
+                  'border-radius' : '5px',
+                  'margin-bottom' : '0px',
+                  'height' : '20px'
+                }"></ngx-skeleton-loader>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <ng-container *ngFor="let th of ths; let i = index">
+                <th *ngIf="th.isVisible" [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                  {{ th.label }}
+                  <ng-container *ngIf="th.canSort">
+                    <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                    <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                  </ng-container>
+                </th>
+              </ng-container>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="visible_columns.length > 1 && isLoaded && items.length > 0">
+      <div class="data-table p-relative table-listing" style="overflow: auto;">
+        <table>
+          <thead>
+            <tr>
+              <ng-container *ngFor="let th of ths; let i = index">
+                <th *ngIf="th.isVisible" [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                  {{ th.label }}
+                  <ng-container *ngIf="th.canSort">
+                    <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                    <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                  </ng-container>
+                </th>
+              </ng-container>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of items; let i = index">
+              <td *ngIf="ths[0].isVisible" [innerHTML]="item.action"></td>
+              <td *ngIf="ths[1].isVisible">{{ item.created_at }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <ng-container *ngFor="let th of ths; let i = index">
+                <th *ngIf="th.isVisible" [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                  {{ th.label }}
+                  <ng-container *ngIf="th.canSort">
+                    <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                    <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                  </ng-container>
+                </th>
+              </ng-container>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="visible_columns.length > 1 && isLoaded && items.length == 0">
+      <div class="row h-300">
+        <div class="col-12 text-center">
+          <p class="mb-0 align-center">No Results found</p>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="isLoaded && visible_columns.length == 1">
+      <div class="row">
+        <div class="col-12 text-center">
+          <p class="mb-0">Please choose column visibility</p>
+        </div>
+      </div>
+    </ng-container>
+    <div class="row mt-20">
+      <div class="col-xl-5 col-lg-3 col-md-12 col-sm-12 col-12">
+        <div class="form-group mb-0">
+          <div class="inner-group in-line">
+            <label class="mr-15">Show</label>
+            <mat-select class="btn btn-drop-down text-left mr-15" [(ngModel)]="limit" (selectionChange)="changeLimit($event)" *ngIf="totalItems >= 10">
+                <mat-option *ngFor="let limit of limits" [value]="limit.value">{{ limit.label }}</mat-option>
+            </mat-select>
+            <mat-select class="btn btn-drop-down text-left mr-15" [(ngModel)]="limit_disabled" *ngIf="totalItems < 10" disabled>
+                <mat-option [value]="limit_disabled">{{ limit_disabled }}</mat-option>
+            </mat-select>
+            <label>of {{ totalItems | number }} entries</label>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-7 col-lg-9 col-md-12 col-sm-12 col-12">
+        <mat-paginator
+            [length]="totalItems"
+            [pageSize]="limit"
+            [hidePageSize]="true"
+            [showFirstLastButtons]="true"
+            (page)="gotoPage($event)"
+            [pageIndex]="page - 1"
+        >
+        </mat-paginator>
+      </div>
+    </div>
+  </div>
+</section>

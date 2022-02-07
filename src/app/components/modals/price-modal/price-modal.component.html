@@ -1,0 +1,52 @@
+<div class="row">
+    <div class="col-12">
+        <h6 class="mini-heading">{{ modal_title }}</h6>
+    </div>
+</div>
+<form [formGroup]="priceForm" (ngSubmit)="submit()">
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label class="text-secondary">Egg Size: <strong>{{ modal_message }}</strong></label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label class="text-secondary">Current price (per piece)</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text mb-10">Php</span>
+                    </div>
+                    <input type="number" formControlName="current_price" class="form-control mb-10" disabled/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label class="text-secondary">New price (per piece) <span class="required">*</span></label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text mb-10">Php</span>
+                    </div>
+                    <input type="number" formControlName="price" class="form-control mb-10"/>
+                </div>
+                <ng-container *ngIf="priceForm.controls.price.touched">
+                    <p class="text-danger" *ngIf="priceForm.controls.price.hasError('required')">This new price field should be valid and not empty</p>
+                    <p class="text-danger" *ngIf="priceForm.controls.price.hasError('min')">New price must not be less than 0</p>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6 text-right">
+            <button type="button" mat-flat-button class="btn btn-sm btn-clear" (click)="closeModal()" [disabled]="isLoading">Cancel</button>
+        </div>
+        <div class="col-6">
+            <button type="submit" mat-flat-button class="btn btn-sm btn-block" [ngClass]="{'btn-primary' : action != 'delete', 'btn-danger' : action == 'delete' }" [disabled]="(!priceForm.valid && action != 'delete') || isLoading">{{ modal_primary_button }}</button>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,202 @@
+<ngx-spinner
+    type="ball-pulse"
+></ngx-spinner>
+<section class="main-container p-20" [ngClass]="{ 'h-100-per' : !house_id }">
+    <div class="row mb-20">
+        <div class="col-xl-auto offset-xl-2">
+            <button type="button" mat-flat-button class="btn btn-sm btn-secondary" (click)="openModal('go_back', 'feedmedconsumption_create')">
+                <i class="icon-back"></i>
+                <span class="ml-15">Go back to list</span>
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-8 offset-xl-2">
+            <h1 class="heading">Add new monthly record</h1>
+            <p class="sub-heading mb-20">For this month of {{ monthdatetoday | timezone | date : 'MMMM yyyy' }}</p>
+        </div>
+    </div>
+    <form [formGroup]="medicineConsumptionForm">
+        <div class="row">
+            <div class="col-xl-8 offset-xl-2">
+                <div class="container-card view-record">
+                    <div class="p-20">
+                        <h1 class="heading">Record Details</h1>
+                    </div>
+                    <div class="pr-20 pl-20 pb-20">
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group mb-20">
+                                    <label class="text-secondary">House/Building no. <span class="required">*</span></label>
+                                    <mat-select class="btn btn-drop-down btn-block text-left mb-10" formControlName="house_id" placeholder="Please select a house/bldg no." (selectionChange)="getHousedetails($event)">
+                                        <mat-option *ngFor="let house of house_options" [value]="house.id">House/bldg no. {{ house.house_name }}</mat-option>
+                                    </mat-select>
+                                    <ng-container *ngIf="medicineConsumptionForm.controls.house_id.touched">
+                                        <p class="text-danger" *ngIf="medicineConsumptionForm.controls.house_id.hasError('required')">House is required</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group mb-20">
+                                    <label class="text-secondary">Add Beginning Population of Chickens <span class="required">*</span></label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control mb-10" formControlName="bird_count" placeholder="0" maxlength="10"/>
+                                    </div>
+                                    <small class="form-text text-muted">Beginning number of chickens at the start of the month.</small>
+                                    <small class="form-text text-muted">i.e. on January 1, the beginning population is 5000.</small>
+                                    <small class="form-text text-muted">If the record is not set on the first day of the month, the beginning population should be the count from yesterday's record.</small>
+                                    <ng-container *ngIf="medicineConsumptionForm.controls.bird_count.touched">
+                                        <p class="text-danger" *ngIf="medicineConsumptionForm.controls.bird_count.hasError('required')">Beginning population is
+                                            required</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group mb-0">
+                                    <label class="text-secondary">Beginning age of Chickens<span class="required">*</span></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text mb-10">Weeks</span>
+                                        </div>
+                                        <input type="number" class="form-control mb-10" formControlName="age_week" placeholder="1"/>
+                                    </div>
+                                    <small class="form-text text-muted">Age of chickens (weeks) at the start of the month.</small>
+                                    <ng-container *ngIf="medicineConsumptionForm.controls.age_week.touched">
+                                        <p class="text-danger" *ngIf="medicineConsumptionForm.controls.age_week.hasError('required')">Week is
+                                            required</p>
+                                        <p class="text-danger" *ngIf="medicineConsumptionForm.controls.age_week.hasError('min')">Week must be atleast 1</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                <div class="form-group mb-0">
+                                    <label class="text-secondary"><span class="required"></span></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text mb-10">Days</span>
+                                        </div>
+                                        <input type="number" class="form-control mb-10" formControlName="age_day" placeholder="0"/>
+                                    </div>
+                                    <small class="form-text text-muted">Age of chickens (days) at the start of the month.</small>
+                                    <ng-container *ngIf="medicineConsumptionForm.controls.age_day.touched">
+                                        <p class="text-danger" *ngIf="medicineConsumptionForm.controls.age_day.hasError('required')">Day is
+                                            required</p>
+                                        <p class="text-danger" *ngIf="medicineConsumptionForm.controls.age_day.hasError('min')">Day must be atleast 0</p>
+                                        <p class="text-danger" *ngIf="medicineConsumptionForm.controls.age_day.hasError('max')">Day must not exceed 6</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row pt-20" *ngIf="house_id && medicine && medicine.length > 0">
+            <div class="col-xl-8 offset-xl-2">
+                <div class="container-card view-record">
+                    <div class="p-20">
+                        <h1 class="heading">Prescribed Feed & Medicine per day</h1>
+                    </div>
+                    <div class="pr-20 pl-20 pb-20">
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-md-12">
+                                <div class="row" *ngFor="let day of days; let i = index" [ngClass]="{ 'mb-20 border-bottom' : i < days.length - 1 }">
+                                    <div class="col-xl-1 col-lg-1 col-md-1">
+                                        <div class="form-group">
+                                            <label class="fs-14 mb-10">Day</label>
+                                            <label class="fs-14 mb-10">{{ day.day | timezone | date : 'dd' }}</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-8 col-lg-8 col-md-8">
+                                        <div class="row">
+                                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                                <div class="form-group mb-20">
+                                                    <label class="fs-14 mb-10">Choose a feed</label>
+                                                    <!-- <mat-select class="btn btn-drop-down btn-block text-left" placeholder="Please choose feed" [value]="medicine[i].feed.feed_id" (selectionChange)="chooseFeed($event, i)" [disabled]="medicine[i].day < (date_today | timezone | date : 'yyyy-MM-dd') || (house_data && house_data[i].prepared_by) ? true : false"> -->
+                                                    <mat-select class="btn btn-drop-down btn-block text-left" placeholder="Please choose feed" [value]="medicine[i].feed.feed_id" (selectionChange)="chooseFeed($event, i)">
+                                                        <mat-option *ngFor="let feed of feed_options" [value]="feed.id">{{ feed.feed }}</mat-option>
+                                                    </mat-select>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-6 col-lg-6 col-md-6">
+                                                <div class="form-group mb-20">
+                                                    <label class="fs-14 mb-10">Feed Consumption</label>
+                                                    <!-- <input type="number" class="form-control mb-10" placeholder="0" maxlength="10" (input)="setFeedValue($event.target.value, i)" [value]="medicine[i].feed.feed_consumption" [disabled]="medicine[i].day < (date_today | timezone | date : 'yyyy-MM-dd') || (house_data && house_data[i].prepared_by) ? true : false"/> -->
+                                                    <input type="number" class="form-control mb-10" placeholder="0" maxlength="10" (input)="setFeedValue($event.target.value, i)" [value]="medicine[i].feed.feed_consumption"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group mb-10">
+                                                    <label class="fs-14 mb-0">Choose medicine/s</label>
+                                                    <div class="row">
+                                                        <div class="col-xl-6 col-lg-6 col-md-6" *ngFor="let med of medicines; let x = index">
+                                                            <!-- <mat-checkbox [value]="med.id" (change)="checkbox($event, i, x)" [checked]="medicine[i].med[x].value > 0 ? true : false" [disabled]="medicine[i].day < (date_today | timezone | date : 'yyyy-MM-dd') || (house_data && house_data[i].prepared_by) ? true : false">{{ med.medicine }}</mat-checkbox> -->
+                                                            <mat-checkbox [value]="med.id" (change)="checkbox($event, i, x)" [checked]="medicine[i].med[x].value > 0 ? true : false">{{ med.medicine }}</mat-checkbox>
+                                                            <div class="input-group">
+                                                                <!-- <input class="form-control mb-10" type="number" min="0" step="0.01" placeholder="0" (input)="setMedvalue($event.target.value,i,x)" [value]="medicine[i].med[x].value" [disabled]="medicine[i].day < (date_today | timezone | date : 'yyyy-MM-dd') || (house_data && house_data[i].prepared_by) ? true : false"/> -->
+                                                                <input class="form-control mb-10" type="number" min="0" step="0.01" placeholder="0" (input)="setMedvalue($event.target.value,i,x)" [value]="medicine[i].med[x].value"/>
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text mb-10">{{ med.medicine_unit.unit }}</span>
+                                                                </div> 
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <div class="col-lg-5 mt-30 mb-20">
+                                    <button mat-flat-button class="btn btn-primary btn-block">
+                                        <i class="icon-add"></i>
+                                        <span class="ml-15 d-xl-inline d-lg-inline d-md-inline d-sm-none d-none" (click)="addDay()">Add Daily
+                                            Medication</span>
+                                    </button>
+                                </div> -->
+                                <hr class="m-0">
+                                <div class="p-20 fixed-div">
+                                    <div class="row">
+                                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6 ml-xl-auto ml-lg-auto ml-md-auto">
+                                            <button type="button" mat-flat-button class="btn btn-clear btn-block" (click)="openModal('form_cancel', 'feedmedconsumption_create')">
+                                                Cancel
+                                            </button>
+                                        </div>
+                                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6">
+                                            <!-- <button type="submit" mat-flat-button class="btn btn-primary btn-block" (click)="openModal(medicineConsumptionForm.value, 'medicine_add')">
+                                                Save Changes
+                                            </button> -->
+                                            <mat-spinner-button (btnClick)="openModal(medicineConsumptionForm.value, 'medicine_add')" [options]="btnOps" [disabled]="!medicineConsumptionForm.valid"></mat-spinner-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+<!-- <div class="footer" #footer>
+    Your sticky footer with a variable height.
+</div>
+<footer fxFlexOffset="auto">
+    <div class="container">
+        <div class="row row mt-20 mb-20">
+            <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6 ml-xl-auto ml-lg-auto ml-md-auto">
+                <button type="button" mat-flat-button class="btn btn-clear btn-block" (click)="openModal('form_cancel', 'feedmedconsumption_create')">
+                    Cancel
+                </button>
+            </div>
+            <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6">
+                <button type="submit" mat-flat-button class="btn btn-primary btn-block" (click)="openModal(medicineConsumptionForm.value, 'medicine_add')">
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+</footer> -->

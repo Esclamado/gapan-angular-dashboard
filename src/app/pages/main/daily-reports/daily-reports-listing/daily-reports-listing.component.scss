@@ -1,0 +1,8 @@
+.mat-select-value {
+    &::after {
+        content: 'asd';
+    }
+}
+.mat-select-value-text {
+    display: none !important;
+}

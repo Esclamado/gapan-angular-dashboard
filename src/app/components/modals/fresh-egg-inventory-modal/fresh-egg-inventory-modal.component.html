@@ -1,0 +1,55 @@
+<div class="row">
+    <div class="col-12">
+        <h6 class="mini-heading">{{ modal_title }}</h6>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="form-group">
+            <label class="text-secondary">{{ modal_message }}</label>
+        </div>
+    </div>
+</div>
+<div class="row mb-20">
+    <div class="col-12">
+        <div class="data-table p-relative table-listing h-300" style="overflow: auto;">
+            <table>
+                <tbody>
+                    <ng-container *ngIf="isLoaded">
+                        <tr *ngFor="let item of items.egg_inventory; let i = index">
+                            <td class="w-30-per alt">{{ item.type }}</td>
+                            <td class="w-70-per">
+                                <ng-container>{{ item.egg_count | number }}</ng-container>
+                            </td>
+                        </tr>
+                    </ng-container>
+                    <ng-container *ngIf="!isLoaded">
+                        <tr>
+                            <td class="w-30-per alt">
+                                <ngx-skeleton-loader [theme]="{
+                                    'border-radius': '5px',
+                                    'margin-bottom': '0px',
+                                    'height': '20px',
+                                    'width': '50%'
+                                }"></ngx-skeleton-loader>
+                            </td>
+                            <td class="w-70-per">
+                                <ngx-skeleton-loader [theme]="{
+                                    'border-radius': '5px',
+                                    'margin-bottom': '0px',
+                                    'height': '20px',
+                                    'width': '50%'
+                                }"></ngx-skeleton-loader>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-auto ml-auto">
+        <button type="submit" mat-flat-button class="btn btn-sm btn-block" [ngClass]="modal_primary_button_class" (click)="closeModal()">{{ modal_primary_button }}</button>
+    </div>
+</div>

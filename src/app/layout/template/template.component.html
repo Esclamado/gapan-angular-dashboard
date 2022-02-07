@@ -1,0 +1,228 @@
+<mat-drawer-container class="sidenav-container">
+  <mat-drawer #drawer class="sidenav" fixedInViewport
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="(isHandset$ | async) === false">
+    <mat-toolbar class="h-auto pt-15 pb-15">
+      <img class="m-auto" src="../../../assets/images/gapan-logo.svg">
+    </mat-toolbar>
+    <mat-nav-list>
+      <mat-accordion>
+        <ng-container *ngIf="userLogin.user_role_id == 4">
+          <a mat-list-item routerLink="/dashboard" routerLinkActive="active-list-item">
+            <i class="icon-dashboard"></i>
+            <span class="fs-14 ml-15">Dashboard</span>
+          </a>
+          <a mat-list-item routerLink="/house" routerLinkActive="active-list-item">
+            <i class="icon-house-building"></i>
+            <span class="fs-14 ml-15">House/Building</span>
+          </a>
+          <a mat-list-item routerLink="/staffs" routerLinkActive="active-list-item">
+            <i class="icon-staffs"></i>
+            <span class="fs-14 ml-15">Staffs</span>
+          </a>
+          <a mat-list-item routerLink="/activity-log/activity" routerLinkActive="active-list-item">
+            <i class="icon-daily-reports"></i>
+            <span class="fs-14 ml-15">Activity Log</span>
+          </a>
+          <a mat-list-item routerLink="/customers" routerLinkActive="active-list-item">
+            <i class="icon-customers"></i>
+            <span class="fs-14 ml-15">Customers</span>
+          </a>
+          <mat-expansion-panel class="m-0 no-box-shadow">
+            <mat-expansion-panel-header class="pl-15 pr-15">
+              <mat-panel-title>
+                <i class="icon-feeds-medicine-management"></i>
+                <span class="fs-14 ml-15">Feeds and Medicine Management</span>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <a mat-list-item class="pl-35 fs-14" routerLink="/feeds-medicine-management/feeds" routerLinkActive="active-list-item">Feeds</a>
+            <a mat-list-item class="pl-35 fs-14" routerLink="/feeds-medicine-management/medicine" routerLinkActive="active-list-item">Medicine</a>
+          </mat-expansion-panel>
+          <a mat-list-item routerLink="/feeds-medicine-consumption" routerLinkActive="active-list-item">
+            <i class="icon-feeds-medicine-consumption"></i>
+            <span class="fs-14 ml-15">Feeds and Medicine Consumption</span>
+          </a>
+          <mat-expansion-panel class="m-0 no-box-shadow pt-5 pb-5">
+            <mat-expansion-panel-header class="pl-15 pr-15">
+              <mat-panel-title>
+                <i class="icon-daily-reports"></i>
+                <span class="fs-14 ml-15">Daily Reports</span>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <a mat-list-item class="pl-35 fs-14" routerLink="/daily-reports" routerLinkActive="active-list-item">All</a>
+            <ng-container *ngFor="let house of houses; let i = index">
+              <a mat-list-item class="pl-35 fs-14" [routerLink]="[ '/daily-reports-house', house.id]" routerLinkActive="active-list-item">House/Building no. {{ house.house_name }}</a>
+            </ng-container>
+          </mat-expansion-panel>
+        </ng-container>
+        <mat-expansion-panel class="m-0 no-box-shadow">
+          <mat-expansion-panel-header class="pl-15 pr-15">
+            <mat-panel-title>
+              <i class="icon-transactions"></i>
+              <span class="fs-14 ml-15">Transactions</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <a mat-list-item class="pl-35 fs-14" routerLink="/transactions" routerLinkActive="active-list-item">All</a>
+          <a mat-list-item class="pl-35 fs-14" [routerLink]="[ '/transactions-status', 1]" routerLinkActive="active-list-item">Pending
+            <mat-chip-list class="ml-auto" *ngIf="statuscount && statuscount.pending > 0">
+              <mat-chip>{{ statuscount && statuscount.pending ? statuscount.pending : 0 }}</mat-chip>
+            </mat-chip-list>
+          </a>
+          <a mat-list-item class="pl-35 fs-14" [routerLink]="[ '/transactions-payment', 3]" routerLinkActive="active-list-item">With Balance
+            <mat-chip-list class="ml-auto" *ngIf="statuscount && statuscount.balance > 0">
+              <mat-chip>{{ statuscount && statuscount.balance ? statuscount.balance : 0 }}</mat-chip>
+            </mat-chip-list>
+          </a>
+          <a mat-list-item class="pl-35 fs-14" [routerLink]="[ '/transactions-payment', 2]" routerLinkActive="active-list-item">With Credit
+            <mat-chip-list class="ml-auto" *ngIf="statuscount && statuscount.credit > 0">
+              <mat-chip>{{ statuscount && statuscount.credit ? statuscount.credit : 0 }}</mat-chip>
+            </mat-chip-list>
+          </a>
+          <a mat-list-item class="pl-35 fs-14" [routerLink]="[ '/transactions-status', 4]" routerLinkActive="active-list-item">Completed
+            <mat-chip-list class="ml-auto" *ngIf="statuscount && statuscount.completed > 0">
+              <mat-chip>{{ statuscount && statuscount.completed ? statuscount.completed : 0 }}</mat-chip>
+            </mat-chip-list>
+          </a>
+        </mat-expansion-panel>
+        <ng-container *ngIf="userLogin.user_role_id == 5">
+          <a mat-list-item routerLink="/customers" routerLinkActive="active-list-item">
+            <i class="icon-customers"></i>
+            <span class="fs-14 ml-15">Customers</span>
+          </a>
+        </ng-container>
+        <ng-container *ngIf="userLogin.user_role_id == 5">
+          <mat-expansion-panel class="m-0 no-box-shadow">
+            <mat-expansion-panel-header class="pl-15 pr-15">
+              <mat-panel-title>
+                <i class="icon-performance-report"></i>
+                <span class="fs-14 ml-15">Performance Report</span>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-accordion>
+              <mat-expansion-panel class="m-0 no-box-shadow">
+                <mat-expansion-panel-header class="pl-50 pr-15">
+                  <mat-panel-title>
+                    <span class="fs-14">Sales</span>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <a mat-list-item class="pl-60 fs-14" routerLink="/performance-report/sales/overall-sales" routerLinkActive="active-list-item">Overall Sales</a>
+                <a mat-list-item class="pl-60 fs-14" routerLink="/performance-report/sales/sales-by-egg-size" routerLinkActive="active-list-item">Sales by egg size</a>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </mat-expansion-panel>
+        </ng-container>
+        <ng-container *ngIf="userLogin.user_role_id == 4">
+          <a mat-list-item routerLink="/price-management" routerLinkActive="active-list-item">
+            <i class="icon-price-management"></i>
+            <span class="fs-14 ml-15">Price Management</span>
+          </a>
+          <mat-expansion-panel class="m-0 no-box-shadow">
+            <mat-expansion-panel-header class="pl-15 pr-15">
+              <mat-panel-title>
+                <i class="icon-performance-report"></i>
+                <span class="fs-14 ml-15">Performance Report</span>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-accordion>
+              <mat-expansion-panel class="m-0 no-box-shadow">
+                <mat-expansion-panel-header class="pl-50 pr-15">
+                  <mat-panel-title>
+                    <span class="fs-14">Harvested</span>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <a mat-list-item class="pl-60 fs-14" routerLink="/performance-report/harvested/production-by-egg-size" routerLinkActive="active-list-item">Production by egg size</a>
+                <a mat-list-item class="pl-60 fs-14" routerLink="/performance-report/harvested/production-per-house" routerLinkActive="active-list-item">Production per house</a>
+              </mat-expansion-panel>
+              <mat-expansion-panel class="m-0 no-box-shadow">
+                <mat-expansion-panel-header class="pl-50 pr-15">
+                  <mat-panel-title>
+                    <span class="fs-14">Sales</span>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <a mat-list-item class="pl-60 fs-14" routerLink="/performance-report/sales/overall-sales" routerLinkActive="active-list-item">Overall Sales</a>
+                <a mat-list-item class="pl-60 fs-14" routerLink="/performance-report/sales/sales-by-egg-size" routerLinkActive="active-list-item">Sales by egg size</a>
+              </mat-expansion-panel>
+              <mat-expansion-panel class="m-0 no-box-shadow">
+                <mat-expansion-panel-header class="pl-50 pr-15">
+                  <mat-panel-title>
+                    <span class="fs-14">Consumption</span>
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <a mat-list-item class="pl-60 fs-14" routerLink="/performance-report/consumption/feeds" routerLinkActive="active-list-item">Feeds</a>
+                <a mat-list-item class="pl-60 fs-14" routerLink="/performance-report/consumption/medicine" routerLinkActive="active-list-item">Medicine</a>
+              </mat-expansion-panel>
+              <a mat-list-item class="pl-35 fs-14" routerLink="/performance-report/stocks" routerLinkActive="active-list-item">Inflow/Outflow</a>
+            </mat-accordion>
+          </mat-expansion-panel>
+        </ng-container>
+        <mat-expansion-panel class="m-0 no-box-shadow">
+          <mat-expansion-panel-header class="pl-15 pr-15">
+            <mat-panel-title>
+              <i class="icon-inventory-stocks"></i>
+              <span class="fs-14 ml-15">Inventory/Stocks</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <a mat-list-item class="pl-35 fs-14" routerLink="/inventory-stocks/fresh-eggs" routerLinkActive="active-list-item">Fresh Eggs</a>
+          <a mat-list-item class="pl-35 fs-14" routerLink="/inventory-stocks/trays" routerLinkActive="active-list-item">Trays</a>
+          <a mat-list-item class="pl-35 fs-14" routerLink="/inventory-stocks/sacks" routerLinkActive="active-list-item">Sacks</a>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </mat-nav-list>
+  </mat-drawer>
+  <mat-drawer-content>
+    <mat-toolbar color="light">
+      <button
+          type="button"
+          aria-label="Toggle sidenav"
+          mat-icon-button
+          (click)="drawer.toggle()"
+          *ngIf="isHandset$ | async">
+          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span class="ml-auto">
+        <button mat-icon-button [matMenuTriggerFor]="notifications">
+          <mat-icon *ngIf="notifCount > 0" aria-hidden="false" [matBadge]="notifCount > 99 ? '99+' : notifCount" matBadgeColor="warn">notifications_none</mat-icon>
+          <mat-icon *ngIf="notifCount == 0" aria-hidden="false">notifications_none</mat-icon>
+        </button>
+        <mat-menu #notifications="matMenu" class="notif-container {{ notifCount == 0 ? 'h-auto p-0 mh-0' : ''}}">
+          <ng-container *ngIf="notifPreview && notifPreview.length > 0">
+            <mat-card *ngFor="let notifData of notifPreview; let i = index" class="no-box-shadow" (click)="gotoPage(notifData)">
+              <mat-card-header class="notif-card-header">
+                <div mat-card-avatar>
+                  <img *ngIf="notifData.owner_profile_pic" class="rounded-circle w-40" [src]="notifData.owner_profile_pic">
+                  <img *ngIf="!notifData.owner_profile_pic" class="rounded-circle w-40" src="../../../../assets/images/image_icon.png" alt="profile_pic">
+                </div>
+                <!-- <mat-card-title>Shiba Inu</mat-card-title> -->
+                <mat-card-subtitle class="m-0">
+                  <p class="fs-14 mb-10" [innerHTML]="notifData.data"></p>
+                  <p class="fs-10 italic text-right m-0">{{ notifData.updated_at | timezone | timeago }}</p>
+                </mat-card-subtitle>
+              </mat-card-header>
+            </mat-card>
+          </ng-container>
+          <mat-card *ngIf="notifPreview && notifPreview.length == 0">
+            <mat-card-header>
+              <!-- <mat-card-title>Shiba Inu</mat-card-title> -->
+              <mat-card-subtitle class="m-0">
+                <p class="fs-14 mb-0">No notifications yet</p>
+              </mat-card-subtitle>
+            </mat-card-header>
+          </mat-card>
+        </mat-menu>
+        <button mat-flat-button [matMenuTriggerFor]="menu" class="ml-10">
+          <img *ngIf="userLogin.user_profile.profile_picture"  class="rounded-circle w-30 mr-10"
+          [src]="userLogin.user_profile.profile_picture">
+          <img *ngIf="!userLogin.user_profile.profile_picture" class="rounded-circle w-30 mr-10" src="../../../../assets/images/image_icon.png" alt="profile_pic">
+          <span>{{ userLogin && userLogin.user_profile ? userLogin.user_profile.first_name + ' ' + userLogin.user_profile.last_name : '' }}</span>
+          <mat-icon aria-hidden="false">expand_more</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu" class="p-0">
+          <button mat-menu-item routerLink="/my-profile">My Profile</button>
+          <button mat-menu-item (click)="logout()">Logout</button>
+        </mat-menu>
+      </span>
+    </mat-toolbar>
+    <router-outlet> </router-outlet>
+  </mat-drawer-content>
+</mat-drawer-container>  

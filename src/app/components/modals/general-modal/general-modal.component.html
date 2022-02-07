@@ -1,0 +1,49 @@
+<div class="row">
+    <div class="col-12">
+        <h6 class="mini-heading">{{ modal_title }}</h6>
+    </div>
+</div>
+<form [formGroup]="generalForm" (ngSubmit)="submit()">
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label class="text-secondary">{{ modal_message }}</label>
+            </div>
+        </div>
+    </div>
+    <div class="row" *ngIf="action == 'order_decline'">
+        <div class="col-12">
+            <div class="form-group">
+                <label class="text-secondary">Reason <span class="required">*</span></label>
+                <textarea maxlength="250" class="form-control mb-10" formControlName="message" row="3"></textarea>
+                <label class="text-secondary float-right mr-0 mb-15">{{ generalForm.controls.message.value.length }}/250</label>
+                <ng-container *ngIf="generalForm.controls.message.touched">
+                    <p class="text-danger" *ngIf="generalForm.controls.message.hasError('required')">Reason is required</p>
+                    <p class="text-danger" *ngIf="generalForm.controls.message.hasError('maxlength')">Reason is must not exceed 250 characters</p>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <div class="row" *ngIf="action == 'order_cancel'">
+        <div class="col-12">
+            <div class="form-group">
+                <label class="text-secondary">Reason <span class="required">*</span></label>
+                <textarea maxlength="250" class="form-control mb-10" formControlName="message" row="3"></textarea>
+                <label class="text-secondary float-right mr-0 mb-15">{{ generalForm.controls.message.value.length }}/250</label>
+                <ng-container *ngIf="generalForm.controls.message.touched">
+                    <p class="text-danger" *ngIf="generalForm.controls.message.hasError('required')">Reason is required</p>
+                    <p class="text-danger" *ngIf="generalForm.controls.message.hasError('maxlength')">Reason is must not exceed 250 characters</p>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 ml-auto">
+            <button type="button" mat-flat-button class="btn btn-sm btn-block" [ngClass]="modal_secondary_button_class" (click)="closeModal()">{{ modal_secondary_button }}</button>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+            <!-- <button type="submit" mat-flat-button class="btn btn-sm btn-block" [ngClass]="modal_primary_button_class" [disabled]="!generalForm.valid">{{ modal_primary_button }}</button> -->
+            <mat-spinner-button (btnClick)="submit()" [options]="btnOps" [disabled]="!generalForm.valid"></mat-spinner-button>
+        </div>
+    </div>
+</form>

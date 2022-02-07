@@ -1,0 +1,188 @@
+<ngx-spinner
+    type="ball-pulse"
+></ngx-spinner>
+<section class="main-container p-20">
+    <div class="row mb-20">
+        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12">
+            <h1 class="heading">Inflow/Outflow</h1>
+        </div>
+        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6 col-6 ml-auto">
+          <mat-spinner-button (btnClick)="openModal()" [options]="btnOps" [disabled]="!isLoaded"></mat-spinner-button>
+        </div>
+    </div>
+    <div class="row">
+      <div class="col-12 mb-20">
+        <div class="container-card p-20">
+          <div class="row mb-20">
+              <div class="col-xl-auto col-lg-auto col-md-12 col-sm-12 col-12">
+                  <div class="row mb-20">
+                      <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto border-right">
+                          <p>Total Eggs Inflow</p>
+                          <h3>{{ item && item.total_egg_inflow ? (item.total_egg_inflow | number) : 0 }}</h3>
+                      </div>
+                      <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                          <p>Total Eggs Outflow</p>
+                          <h3>{{ item && item.total_egg_inflow ? (item.total_egg_outflow | number) : 0 }}</h3>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-xl-auto col-lg-auto col-md-12 col-sm-12 col-12 ml-auto">
+                  <div class="row">
+                      <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12 ml-auto">
+                          <div class="form-group mb-0">
+                              <div class="inner-group in-line">
+                                  <label class="mr-15">Show:</label>
+  
+                                  <input [satDatepicker]="created_at_picker" [max]="max_date" class="w-0 p-0 border-0" (dateChange)="chooseCreatedAt($event)" [(ngModel)]="created_at">
+                                  <sat-datepicker #created_at_picker [rangeMode]="true"></sat-datepicker>
+                                  <button type="button" mat-flat-button class="btn btn-drop-down btn-block text-left" (click)="created_at_picker.open()">{{ from && to ? (from | timezone | date: 'MMMM dd, yyyy') + ' - ' + (to | timezone | date: 'MMMM dd, yyyy') : 'Choose sales dates' }}
+                                      <i class="icon-arrow-drop-down ml-5 p-initial"></i>
+                                  </button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="row" *ngIf="from && to">
+                      <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto ml-auto">
+                          <button type="button" mat-flat-button class="btn btn-clear btn-sm" (click)="clearFilters()">Reset Filter</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        <div class="row mb-20" *ngIf="isLoaded && items.length > 0">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-20">
+              <canvas baseChart 
+                [datasets]="barChartData"
+                [labels]="barChartLabels"
+                [options]="barChartOptions"
+                [plugins]="barChartPlugins"
+                [legend]="barChartLegend"
+                [chartType]="barChartType">
+              </canvas>
+            </div>
+            <div *ngIf="!from && !to" class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                <p>All Dates</p>
+            </div>
+            <div *ngIf="from && to" class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                <p>{{ from | timezone | date : 'MMMM dd, yyyy' }} - {{ to | timezone | date : 'MMMM dd, yyyy' }}</p>
+            </div>
+        </div>
+        <ng-container *ngIf="!isLoaded">
+          <div class="data-table p-relative table-listing" style="overflow: auto;">
+            <table>
+              <thead>
+                <tr>
+                  <ng-container *ngFor="let th of ths; let i = index">
+                    <th *ngIf="th.isVisible" [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                      {{ th.label }}
+                      <ng-container *ngIf="th.canSort">
+                        <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                        <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                      </ng-container>
+                    </th>
+                  </ng-container>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let x of counter(visible_columns.length);">
+                  <td class="text-uppercase" *ngFor="let x of counter(visible_columns.length); let i = index">
+                    <ngx-skeleton-loader [theme]="{
+                      'border-radius' : '5px',
+                      'margin-bottom' : '0px',
+                      'height' : '20px'
+                    }"></ngx-skeleton-loader>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <ng-container *ngFor="let th of ths; let i = index">
+                    <th *ngIf="th.isVisible" [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                      {{ th.label }}
+                      <ng-container *ngIf="th.canSort">
+                        <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                        <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                      </ng-container>
+                    </th>
+                  </ng-container>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="visible_columns.length > 0 && isLoaded && items.length > 0">
+          <div class="data-table p-relative table-listing" style="overflow: auto;">
+            <table>
+              <thead>
+                <tr>
+                  <ng-container *ngFor="let th of ths; let i = index">
+                    <th [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                      {{ th.label }}
+                      <ng-container *ngIf="th.canSort">
+                        <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                        <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                      </ng-container>
+                    </th>
+                  </ng-container>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of items; let i = index">
+                  <td *ngIf="ths[0].isVisible" class="w-25-per">{{ item.created_at | timezone | date: 'MM/dd/yyyy' }}</td>
+                  <td *ngIf="ths[1].isVisible" class="w-25-per">{{ item.total_egg_in | number }}</td>
+                  <td *ngIf="ths[2].isVisible" class="w-25-per">{{ item.total_egg_out | number }}</td>
+                  <td *ngIf="ths[3].isVisible" class="w-25-per">
+                    <button type="button" mat-flat-button class="btn btn-clear text-blue" [routerLink]="[ '/inventory-stocks/fresh-eggs/view', item.date]">
+                      <i class="icon-datatables-view"></i>
+                      View
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <ng-container *ngFor="let th of ths; let i = index">
+                    <th [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                      {{ th.label }}
+                      <ng-container *ngIf="th.canSort">
+                        <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                        <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                      </ng-container>
+                    </th>
+                  </ng-container>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="visible_columns.length > 0 && isLoaded && items.length == 0">
+          <div class="row h-300">
+            <div class="col-12 text-center">
+              <p class="mb-0 align-center">No Results found</p>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="isLoaded && visible_columns.length == 0">
+          <div class="row">
+            <div class="col-12 text-center">
+              <p class="mb-0">Please choose column visibility</p>
+            </div>
+          </div>
+        </ng-container>
+        <div class="row mt-20">
+          <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 ml-auto">
+            <mat-paginator
+              [length]="totalItems"
+              [pageSize]="limit"
+              [hidePageSize]="true"
+              [showFirstLastButtons]="true"
+              (page)="gotoPage($event)"
+              [pageIndex]="page - 1"
+            >
+            </mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

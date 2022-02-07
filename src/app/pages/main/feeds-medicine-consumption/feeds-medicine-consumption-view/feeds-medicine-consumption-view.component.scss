@@ -1,0 +1,92 @@
+.alt{
+    background: rgba(229, 229, 229, 0.4) !important;
+}
+.order-timer{
+    background: #DDE1E5;
+    border-radius: 5px;
+    margin-top: -15px;
+    margin-bottom: 22px;
+    overflow: hidden;
+    .note{
+        display: inline-block;
+        /* font-size: $font17; */
+        line-height: 25px;
+        letter-spacing: -0.0241176em;
+        color: #494A4B;
+        padding: 13px;
+        img{
+            margin-right: 13px;
+            width: 28px;
+            height: 28px;
+            /* font-size: $font49; */
+        }
+    }
+    .countdown {
+        .measurements {
+            text-align: center;
+            margin: 0 5px;
+            &:first-child {
+                margin-left: 0;
+            }
+            &:last-child {
+                margin-right: 0;
+            }
+            .measurements-number {
+                font-size: 24px;
+                line-height: 1;
+            }
+            .measurements-text {
+                font-size: 10px;
+                line-height: 1;
+            }
+        }
+    }
+    .timer{
+        background: #72787F;
+        border-radius: 0px 0px 5px 5px;
+        padding: 7px 13px;
+        display: inline-block;
+        color: #FFF;
+        p{
+            margin: 0;
+        }
+        img{
+            margin-left: 40px;
+            margin-right: 2px;
+            width: 25px;
+            height: 25px;
+        }
+        .measurements{
+            min-width: 25px;
+            position: relative;
+            p{
+                margin-bottom: 0;
+            }
+            .measurements-number{
+                font-weight: bold;
+                font-size: 20px;
+                line-height: 23px;
+                letter-spacing: 0.02em;
+            }
+            .measurements-text{
+                font-size: 10px;
+                line-height: 14px;
+            }
+            .divider{
+                /* margin-top: -24px;
+                margin-right: -7px; */
+                position: absolute;
+                top: -2px;
+                right: -7px;
+                font-weight: bold;
+                font-size: 20px;
+            }
+        }
+    }
+}
+.rowActive{
+    background-color: #c6c6c6;
+}
+.activeRow{
+    border: 2px solid black;
+}

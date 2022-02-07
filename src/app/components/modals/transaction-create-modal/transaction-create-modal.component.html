@@ -1,0 +1,109 @@
+<div class="row">
+    <div class="col-12">
+        <h6 class="mini-heading">{{ modal_title }}</h6>
+    </div>
+</div>
+<form [formGroup]="orderForm">
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label class="text-secondary">{{ modal_message }}</label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label class="text-secondary">Mode of Payment <span class="required">*</span></label>
+                <mat-select class="btn btn-drop-down btn-sm btn-block text-left" formControlName="mode_of_payment" placeholder="Mode of Payment" (selectionChange)="changePayment($event)" [disabled]="total_price < 100">
+                    <mat-option *ngFor="let item of mode_of_payment_options" [value]="item.value">{{ item.label }}</mat-option>
+                </mat-select>
+                <ng-container *ngIf="orderForm.controls.mode_of_payment.touched">
+                    <p class="text-danger" *ngIf="orderForm.controls.mode_of_payment.hasError('required')">
+                        Mode of payment is required</p>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <ng-container *ngIf="mode_of_payment == 2">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="text-secondary">Credit Amount</label>
+                    <p class="text-danger">₱ {{ orderForm.controls.balance.value | number : '1.2-2' }}</p>
+                    <!-- <input type="number" min="1" placeholder="0" formControlName="balance" class="form-control mb-10" disabled> -->
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group p-relative">
+                    <label class="text-secondary">Date of Credit Payment <span class="required">*</span></label>
+                    <input matInput [min]="min_date" [max]="max_date" [matDatepicker]="due_date_picker" placeholder="mm/dd/yyyy" formControlName="due_date" class="form-control date-input mb-10" readonly (click)="due_date_picker.open()">
+                    <mat-datepicker-toggle matSuffix [for]="due_date_picker" class="p-absolute r-0 t-30"></mat-datepicker-toggle>
+                    <mat-datepicker #due_date_picker></mat-datepicker>
+                    <ng-container *ngIf="orderForm.controls.due_date.touched">
+                        <p class="text-danger" *ngIf="orderForm.controls.due_date.hasError('required')">Date of credit payment is required</p>
+                        <!-- <p class="text-danger" *ngIf="orderForm.controls.due_date.hasError('min')">Date of credit payment is must not be greater than the date today</p>
+                        <p class="text-danger" *ngIf="orderForm.controls.due_date.hasError('max')">Date of credit payment is must not exceed more than 1 week from now</p> -->
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="mode_of_payment == 3">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="text-secondary">Total Price</label>
+                    <p>₱ {{ orderForm.controls.total_price.value | number: '1.2-2' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="text-secondary">Initial Payment <span class="required">*</span></label>
+                    <input type="number" min="1" [max]="grand_total" placeholder="0" formControlName="payment" class="form-control mb-10" (input)="calculateRemaining($event)">
+                    <ng-container *ngIf="orderForm.controls.payment.touched">
+                        <p class="text-danger" *ngIf="orderForm.controls.payment.hasError('required')" >Initial payment is required</p>
+                        <p class="text-danger" *ngIf="orderForm.controls.payment.hasError('min')">Initial payment must be atleast 50% of total amount</p>
+                        <p class="text-danger" *ngIf="orderForm.controls.payment.hasError('max')">Initial payment must not exceed the total price</p>
+                      </ng-container>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="text-secondary">Remaining Balance</label>
+                    <p class="text-danger">₱ {{ orderForm.controls.balance.value | number: '1.2-2' }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group p-relative">
+                    <label class="text-secondary">Date of Balance Payment <span class="required">*</span></label>
+                    <input matInput [min]="min_date" [max]="max_date" [matDatepicker]="due_date_picker" placeholder="mm/dd/yyyy" formControlName="due_date" class="form-control date-input mb-10" readonly (click)="due_date_picker.open()">
+                    <mat-datepicker-toggle matSuffix [for]="due_date_picker" class="p-absolute r-0 t-30"></mat-datepicker-toggle>
+                    <mat-datepicker #due_date_picker></mat-datepicker>
+                    <ng-container *ngIf="orderForm.controls.due_date.touched">
+                        <p class="text-danger" *ngIf="orderForm.controls.due_date.hasError('required')">Date of balance payment is required</p>
+                        <!-- <p class="text-danger" *ngIf="orderForm.controls.due_date.hasError('min')">Date of balance payment is must not be greater than the date today</p>
+                        <p class="text-danger" *ngIf="orderForm.controls.due_date.hasError('max')">Date of balance payment is must not exceed more than 1 week from now</p> -->
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <div class="row">
+        <div class="col-6 text-right">
+            <button type="button" mat-flat-button class="btn btn-sm btn-clear" (click)="closeModal()">Cancel</button>
+        </div>
+        <div class="col-6">
+            <mat-spinner-button (btnClick)="submit()" [options]="btnOps" [disabled]="!orderForm.valid || !mode_of_payment"></mat-spinner-button>
+            <!-- <button type="submit" mat-flat-button class="btn btn-sm btn-block" [ngClass]="modal_primary_button_class" [disabled]="!orderForm.valid || !mode_of_payment">{{ modal_primary_button }}</button> -->
+        </div>
+    </div>
+</form>

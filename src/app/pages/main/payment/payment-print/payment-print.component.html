@@ -1,0 +1,395 @@
+<section class="main-container p-20">
+    <div class="row mb-20">
+        <div class="col-xl-9 col-lg-8 col-md-7 col-sm-6 col-12">
+            <h1 class="heading">Generated Forms</h1>
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-5 col-sm-6 col-12">
+            <button type="button" mat-flat-button class="btn btn-sm btn-secondary btn-block" (click)="goBack()">
+                <i class="icon-back"></i>
+                <span class="ml-15">Go back</span>
+            </button>
+        </div>
+    </div>
+    <div class="container-card view-record p-20">
+        <div id="printable-section">
+            <div id="print-payment-section" class="mb-20 break-now">
+                <div class="border">
+                    <div class="row mt-15 ml-0 mr-0">
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                            <p class="fw-500 fs-12">Payment Date:</p>
+                        </div>
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                            <p class="fs-12">{{ date_today | timezone | date : 'MMM dd, yyyy' }}</p>
+                        </div>
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto ml-auto">
+                            <p class="fw-500 fs-12">Order No.:</p>
+                        </div>
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                            <p class="fs-12">{{ item ? item.transaction_id : '' }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                            <h5 class="mb-20">Payment Form</h5>
+                        </div>
+                    </div>
+                    <div class="row mb-10 ml-0 mr-0">
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                            <p class="fw-500 fs-12">Recipient:</p>
+                        </div>
+                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2 text-center">
+                            <p class="mb-0 fs-12">{{ item ? item.customer_details.profile_last_name : '' }}</p>
+                            <p class="fs-10">(Family Name)</p>
+                        </div>
+                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2 text-center">
+                            <p class="mb-0 fs-12">{{ item ? item.customer_details.profile_first_name : '' }}</p>
+                            <p class="fs-10">(Given Name)</p>
+                        </div>
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                            <p class="fw-500 fs-12">Business Address:</p>
+                        </div>
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                            <p class="mb-0 fs-12">{{ item ? item.customer_details.profile_location : '' }}</p>
+                        </div>
+                    </div>
+                    <ng-container *ngIf="visible_columns.length > 1">
+                        <div class="data-table p-relative table-listing mb-20" style="overflow: auto;">
+                          <table>
+                            <thead>
+                              <tr>
+                                <ng-container *ngFor="let th of ths; let i = index">
+                                  <th class="fs-12" *ngIf="th.isVisible" [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                                    {{ th.label }}
+                                    <ng-container *ngIf="th.canSort">
+                                      <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                                      <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                                    </ng-container>
+                                  </th>
+                                </ng-container>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <ng-container *ngIf="isLoaded && order_items.length > 0">
+                                <tr *ngFor="let item of order_items; let i = index">
+                                    <td class="fs-12" *ngIf="ths[0].isVisible">{{ item.egg_type.type_shortcode }}</td>
+        
+                                    <ng-container *ngFor="let egg of item.order_item_details; let i = index">
+                                        <td class="fs-12" *ngIf="ths[1+1].isVisible">{{ egg.qty | number }}</td>
+                                    </ng-container>
+                                    <td class="fs-12" *ngIf="ths[4].isVisible">{{ item.total_pieces | number }}</td>
+                                    <td *ngIf="ths[5].isVisible" class="text-right fs-12">₱ {{ item.price | number : '1.2-2' }}</td>
+                                    <td *ngIf="ths[6].isVisible" class="text-right fs-12">₱ {{ item.total_price | number : '1.2-2' }}</td>
+                                </tr>
+                              </ng-container>
+                              <ng-container *ngIf="!isLoaded">
+                                <tr>
+                                  <td class="text-uppercase" *ngFor="let x of counter(visible_columns.length); let i = index">
+                                    <ngx-skeleton-loader [theme]="{
+                                      'border-radius' : '5px',
+                                      'margin-bottom' : '0px',
+                                      'height' : '20px'
+                                    }"></ngx-skeleton-loader>
+                                  </td>
+                                </tr>
+                              </ng-container>
+                              <ng-container *ngIf="isLoaded && order_items.length == 0">
+                                <tr>
+                                  <td [attr.colspan]="visible_columns.length" class="text-center">No Results found</td>
+                                </tr>
+                              </ng-container>
+                            </tbody>
+                          </table>
+                        </div>
+                    </ng-container>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto mt-40">
+                            <p class="fw-500 fs-12">Paid By:</p>
+                        </div>
+                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2 text-center mt-40">
+                            <p class="mb-0 fs-12">{{ item ? item.customer_details.profile_first_name : '' }} {{ item ? item.customer_details.profile_last_name : '' }}</p>
+                            <hr class="m-0">
+                            <p class="fs-10">Customer/Buyer/Client</p>
+                        </div>
+        
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto mt-40">
+                            <p class="fw-500 fs-12">Received By:</p>
+                        </div>
+                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2 text-center mt-40">
+                            <p class="mb-0 h-17"></p>
+                            <hr class="m-0">
+                            <p class="fs-10">Authorized Representative</p>
+                        </div>
+        
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 ml-auto">
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+                                    <p class="fw-500 mb-10 fs-12">Sub Total:</p>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 text-right">
+                                    <p class="mb-10 fs-12">₱ {{ item.sub_total_price | number : '1.2-2' }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+                                    <p class="fw-500 mb-10 fs-12">Discount:</p>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 text-right">
+                                    <p class="mb-10 fs-12">₱ {{ item.discount | number : '1.2-2' }}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
+                                    <p class="fw-500 mb-10 fs-12">Grand Total:</p>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 text-right">
+                                    <p class="mb-10 fs-12">₱ {{ item.total_price | number : '1.2-2' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="print-credit-section" class="mb-20 break-now" *ngIf="item && item.mode_of_payment == 2">
+                <div class="border">
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                            <h3 class="mt-10">Gapan Fresh Eggs, Inc.</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                            <h5 class="mb-20">Credit Form</h5>
+                        </div>
+                    </div>
+                    <div class="row mb-10 ml-0 mr-0">
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                            <p class="fw-500 mb-0 fs-12">Pangalan:</p>
+                        </div>
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                            <p class="mb-0 fs-12">{{ item ? item.customer_details.profile_first_name : '' }} {{ item ? item.customer_details.profile_last_name : '' }}</p>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                            <p class="fw-500 fs-12">Petsa:</p>
+                        </div>
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                            <p class="fs-12">{{ date_today | timezone | date : 'MMM dd, yyyy' }}</p>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0 border-bottom border-top">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <p class="mb-15 mt-15 fs-12">Ako ay humihingi ng pahintulot na makahiram ng halagang ₱ <span class="border-bottom fw-500">{{ item ? (item.payment.balance | number : '1.2-2') : '' }}</span>, at nangangako na babayaran sa araw na <span class="border-bottom fw-500">{{ item ? (item.payment.due_date | timezone | date : 'MMM dd, yyyy') : '' }}</span></p>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0 mt-20 border-bottom">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                            <div class="row">
+                                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto mt-40">
+                                    <p class="fw-500 fs-12">Buyer:</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8 text-center mt-40">
+                                    <p class="mb-0 fs-12">{{ item ? item.customer_details.profile_first_name : '' }} {{ item ? item.customer_details.profile_last_name : '' }}</p>
+                                    <hr class="m-0">
+                                    <p class="fs-10">Signature over printed name</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                            <div class="row">
+                                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto mt-40">
+                                    <p class="fw-500 fs-12">Prepared By:</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8 text-center mt-40">
+                                    <p class="mb-0 fs-12">{{ user_profile.user_profile.first_name }} {{ user_profile.user_profile.last_name }}</p>
+                                    <hr class="m-0">
+                                    <p class="fs-10">Signature over Printed Name</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                            <div class="row">
+                                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto mt-40">
+                                    <p class="fw-500 fs-12">Approved By:</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8 text-center mt-40">
+                                    <p class="mb-0 h-17"></p>
+                                    <hr class="m-0">
+                                    <p class="fs-10">Signature over Printed Name</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0 mt-20">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                            <div class="row">
+                                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 mt-40">
+                                    <p class="fw-500 fs-12">Date Paid:</p>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 text-center mt-40">
+                                    <p class="mb-0 fs-12">{{ date_today | timezone | date : 'MMM dd, yyyy' }}</p>
+                                    <hr class="m-0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                            <div class="row">
+                                <!-- <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto mt-40">
+                                    <p class="fw-500">Prepared By:</p>
+                                </div> -->
+                                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8 text-center mt-40">
+                                    <p class="mb-0 fs-12">{{ item ? item.customer_details.profile_first_name : '' }} {{ item ? item.customer_details.profile_last_name : '' }}</p>
+                                    <hr class="m-0">
+                                    <p class="fs-10 mb-0">Signature over Printed Name</p>
+                                    <p class="fs-10">(Buyer Paid)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                            <div class="row">
+                                <!-- <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto mt-40">
+                                    <p class="fw-500">Approved By:</p>
+                                </div> -->
+                                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8 text-center mt-40">
+                                    <p class="mb-0 fs-12">{{ user_profile.user_profile.first_name }} {{ user_profile.user_profile.last_name }}</p>
+                                    <hr class="m-0">
+                                    <p class="fs-10 mb-0">Signature over Printed Name</p>
+                                    <p class="fs-10">(Received Payment)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="print-credit-section" class="mb-20 break-now" *ngIf="item && item.mode_of_payment == 3">
+                <div class="border">
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                            <h3 class="mt-10">Gapan Fresh Eggs, Inc.</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                            <h5 class="mb-20">Balance Form</h5>
+                        </div>
+                    </div>
+                    <div class="row mb-10 ml-0 mr-0">
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                            <p class="fw-500 mb-0 fs-12">Pangalan:</p>
+                        </div>
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                            <p class="mb-0 fs-12">{{ item ? item.customer_details.profile_first_name : '' }} {{ item ? item.customer_details.profile_last_name : '' }}</p>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0">
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                            <p class="fw-500 fs-12">Petsa:</p>
+                        </div>
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                            <p class="fs-12">{{ date_today | timezone | date : 'MMM dd, yyyy' }}</p>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0 border-bottom border-top">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <p class="mb-15 mt-15 fs-12">Ako ay humihingi ng pahintulot na makapag balance ng halagang <span class="border-bottom fw-500">₱ {{ item ? (item.payment.balance | number : '1.2-2') : '' }}</span> presyo ng <span class="border-bottom fw-500">₱ {{ item ? (item.total_price | number : '1.2-2') : 0 }}</span>, at nangangako na babayaran sa araw na <span class="border-bottom fw-500">{{ item ? (item.payment.due_date | timezone | date : 'MMM dd, yyyy') : '' }}</span></p>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0 mt-20 border-bottom">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                            <div class="row">
+                                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto mt-40">
+                                    <p class="fw-500 fs-12">Buyer:</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8 text-center mt-40">
+                                    <p class="mb-0 fs-12">{{ item ? item.customer_details.profile_first_name : '' }} {{ item ? item.customer_details.profile_last_name : '' }}</p>
+                                    <hr class="m-0">
+                                    <p class="fs-10">Signature over printed name</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                            <div class="row">
+                                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto mt-40">
+                                    <p class="fw-500 fs-12">Prepared By:</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8 text-center mt-40">
+                                    <p class="mb-0 fs-12">{{ user_profile.user_profile.first_name }} {{ user_profile.user_profile.last_name }}</p>
+                                    <hr class="m-0">
+                                    <p class="fs-10">Signature over Printed Name</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                            <div class="row">
+                                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto mt-40">
+                                    <p class="fw-500 fs-12">Approved By:</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8 text-center mt-40">
+                                    <p class="mb-0 h-17"></p>
+                                    <hr class="m-0">
+                                    <p class="fs-10">Signature over Printed Name</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 mr-0 mt-20">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                            <div class="row">
+                                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 mt-40">
+                                    <p class="fw-500 fs-12">Date Paid:</p>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 text-center mt-40">
+                                    <p class="mb-0 fs-12">{{ date_today | timezone | date : 'MMM dd, yyyy' }}</p>
+                                    <hr class="m-0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                            <div class="row">
+                                <!-- <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto mt-40">
+                                    <p class="fw-500">Prepared By:</p>
+                                </div> -->
+                                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8 text-center mt-40">
+                                    <p class="mb-0 fs-12">{{ item ? item.customer_details.profile_first_name : '' }} {{ item ? item.customer_details.profile_last_name : '' }}</p>
+                                    <hr class="m-0">
+                                    <p class="fs-10 mb-0">Signature over Printed Name</p>
+                                    <p class="fs-10">(Buyer Paid)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                            <div class="row">
+                                <!-- <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto mt-40">
+                                    <p class="fw-500">Approved By:</p>
+                                </div> -->
+                                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8 text-center mt-40">
+                                    <p class="mb-0 fs-12">{{ user_profile.user_profile.first_name }} {{ user_profile.user_profile.last_name }}</p>
+                                    <hr class="m-0">
+                                    <p class="fs-10 mb-0">Signature over Printed Name</p>
+                                    <p class="fs-10">(Received Payment)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-auto">
+                <mat-spinner-button (btnClick)="exportPdf('pdf')" [options]="btnOps"></mat-spinner-button>
+            </div>
+        </div>
+    </div>
+</section>

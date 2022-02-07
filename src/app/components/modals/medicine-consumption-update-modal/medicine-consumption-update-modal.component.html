@@ -1,0 +1,42 @@
+<div class="row">
+    <div class="col-12">
+        <h6 class="mini-heading">{{ modal_title }}</h6>
+    </div>
+</div>
+    <ng-container *ngIf="action == 'delete'">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="text-secondary">{{ modal_message }}</label>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+        <form [formGroup]="medicineUpdateForm">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 mb-20">
+                    <div class="form-group">
+                        <label class="text-secondary">Select Medicine. <span class="required">*</span></label>
+                        <div class="row">
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12" *ngFor="let meds of medicines; let x = index">
+                                <mat-checkbox [value]="meds.id" [checked]="med[x].value > 0 ? true : false" (change)="checkbox($event, x)">{{ meds.medicine }}</mat-checkbox>
+                                <div class="input-group">
+                                    <input class="form-control mb-10" [value]="med[x].value"type="number" min="0" step="0.01" placeholder="0" (input)="setMedvalue($event.target.value,x)"/>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text mb-10">{{ meds.medicine_unit.unit }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <div class="row">
+                        <div class="col-6 text-right">
+                            <button type="button" mat-flat-button class="btn btn-sm btn-clear" (click)="closeModal()">Cancel</button>
+                        </div>
+                        <div class="col-6">
+                            <button type="submit" mat-flat-button class="btn btn-sm btn-block btn-primary" (click)="submit()">{{ modal_primary_button }}</button>
+                        </div>
+                </div>
+        </form>

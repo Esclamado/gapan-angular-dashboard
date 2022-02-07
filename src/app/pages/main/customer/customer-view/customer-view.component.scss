@@ -1,0 +1,29 @@
+@import "./../../../../../assets/scss/colors.scss";
+@import "./../../../../../assets/scss/fonts.scss";
+.body-card{
+    h1{
+        font-weight: normal;
+    }
+    .action-note{
+        line-height: 21px;
+    }
+    .btn-secondary{
+        width: 100%;
+        padding-top: 9px;
+        padding-bottom: 5px;
+        .cus-layer{
+            height: 100%;
+        }
+    }
+    .row .row{
+        width: 100% !important;
+        p{
+            color: color(font, secondary);
+        }
+    }
+}
+.field-pasword{
+    border: transparent;
+    outline: none;
+    border: 0;
+}

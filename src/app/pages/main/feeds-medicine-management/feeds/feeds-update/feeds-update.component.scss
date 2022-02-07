@@ -1,0 +1,48 @@
+@import "./../../../../../../assets/scss/colors.scss";
+@import "./../../../../../../assets/scss/fonts.scss";
+hr{
+    margin: 0;
+    border-bottom: 1px solid #DDE1E5;
+}
+.c-fields .c-field{
+    label{
+        color: color(font, field-title);
+        span{
+            color: color(danger);
+        }
+    }
+    .form-control{
+        min-height: 50px;
+    }
+}
+.prof-img{
+    display: flex;
+}
+.note{
+    max-width: 240px;
+    color: color(font, secondary);
+}
+.input-group-prepend{
+    .input-group-text {
+        border-radius: 5px 0 0 5px;
+        background-color: #D9DCDE;
+        border: 1px solid #C1C2C3;
+    }
+    input {
+        border-radius: 0 5px 5px 0;
+    }
+    // /* Chrome, Safari, Edge, Opera */
+    // input::-webkit-outer-spin-button,
+    // input::-webkit-inner-spin-button {
+    //     -webkit-appearance: none;
+    //     margin: 0;
+    // }
+
+    // /* Firefox */
+    // input[type=number] {
+    //     -moz-appearance:textfield;
+    // }
+}
+input[type="file"] {
+    display: none;
+}

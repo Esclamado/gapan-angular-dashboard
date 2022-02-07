@@ -1,0 +1,122 @@
+.legend-badge{
+    border-radius:50%;
+    padding: 2px 8px;
+    background: #ccc;
+    color:white;
+    font-size:10px;
+    font-family:verdana;
+    right: 8px;
+    bottom: 1px;
+    position: relative;
+
+    &.on-queue {
+        background: #3297CF !important;
+    }
+    &.on-going {
+        background: #27A651 !important;
+    }
+    &.on-hold {
+        background: #F7931E !important;
+    }
+    &.urgent {
+        background: #CD3633 !important;
+    }
+}
+.invalid-feedback{
+    display: block;
+}
+
+.card-jo {
+    background-color: #EBEBEB;
+    border-radius: 7px;
+}
+
+.card-jo-order{
+    cursor: pointer;
+    width: 100%;
+}
+
+.card-jo-details{
+    padding: 15px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background-color: #fff;
+    color: #000;
+    height: 125px;
+    width: 185px;
+
+    p{
+        text-overflow: ellipsis !important;
+        overflow: hidden !important;
+    }
+    
+    &.pending {
+        background: #C1C2C3 !important;
+    }
+    &.on-going {
+        background: #27A651 !important;
+    }
+    &.on-hold {
+        background: #F7931E !important;
+        p{
+            color: #fff !important;
+        }
+    }
+    &.urgent {
+        background: #CD3633 !important;
+        p{
+            color: #fff !important;
+        }
+    }
+}
+
+.card-jo-status{
+    padding: 18px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background-color: #ffffff;
+    height: 125px;
+    width: 115px;
+}
+
+.jo-column-list {
+    overflow-x: scroll;
+    overflow-y: auto;
+    white-space: nowrap;
+    display: flex;
+    flex-wrap: unset;
+
+    .column{
+        // display: grid;
+        width: 350px;
+    }
+}
+
+.input-list {
+    position: relative;
+  
+    .dropdown {
+        position: absolute;
+        width: 100%;
+        max-height: 240px;
+        overflow: auto;
+        background-color: #fff;
+        box-shadow: 0px 10px 20px rgba(0, 93, 174, 0.1);
+        z-index: 9;
+        border-radius: 2px;
+    
+        .list {
+            margin: 8px 0;
+    
+            li {
+                padding: 15px;
+                cursor: pointer;
+            }
+    
+            li:hover {
+                background-color: rgba(#0097CF, 0.1);
+                font-weight: bold;
+            }
+        }
+    }
+}

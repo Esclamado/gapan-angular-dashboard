@@ -1,0 +1,151 @@
+<ngx-spinner
+    type="ball-pulse"
+></ngx-spinner>
+<div class="container-card view-record p-20">
+    <div id="printable-section">
+        <div class="border">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                    <h3 class="mt-10">Gapan Fresh Eggs, Inc.</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                    <h5>Daily House Harvest Report</h5>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 text-center">
+                    <p class="mb-20">{{ from | timezone | date : 'MMMM dd, yyyy' }} - {{ to | timezone | date : 'MMMM dd, yyyy' }}</p>
+                </div>
+            </div>
+            <div class="row pb-10 ml-0 mr-0 border-bottom">
+                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                    <p class="mb-0 fs-14">Prepared by:</p>
+                </div>
+                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                    <p class="mb-0 fs-14 fw-500">{{ user_profile.user_profile.first_name }} {{ user_profile.user_profile.last_name }}</p>
+                </div>
+                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto ml-auto">
+                    <p class="mb-0 fs-14">Date:</p>
+                </div>
+                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                    <p class="mb-0 fs-14 fw-500">{{ date_today | timezone | date : 'MMM dd, yyyy' }}</p>
+                </div>
+            </div>
+            
+            <div class="row mb-0 ml-0 mr-0 mt-10" *ngIf="item">
+                <div class="col-2 stats">
+                    <p>House/Building no.</p>
+                    <h1>{{ item.house_name ? item.house_name.house_name : '' }}</h1>
+                </div>
+                <div class="col-2 stats">
+                    <p>Beginning population</p>
+                    <h1>{{ item.beginning_population ? (item.beginning_population | number) : 0 }}</h1>
+                </div>
+                <div class="col stats">
+                    <p>Beginning age</p>
+                    <h1>{{ item.beginning_age ? item.beginning_age : '0' }}</h1>
+                </div>
+            </div>
+    
+            <ng-container *ngIf="visible_columns.length > 1">
+                <div class="data-table p-relative table-listing" style="overflow: auto;">
+                    <div class="data-table p-relative table-listing" style="overflow: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <ng-container *ngFor="let th of ths; let i = index">
+                                    <th *ngIf="th.isVisible && th.canToggle" class="p-10 fs-12">
+                                        {{ th.label }}
+                                    </th>
+                                    </ng-container>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngIf="isLoaded && items.length > 0">
+                                    <tr *ngFor="let item of items; let i = index" [ngClass]="{'break-now' : (i + 1) % 11 == 0}">
+                                        <td *ngIf="ths[0].isVisible" class="p-10 fs-10">{{ item.prepared_by_date | timezone | date: 'MM/dd/yyyy, hh:mm aaa' }}</td>
+                                        <td *ngIf="ths[1].isVisible" class="p-10 fs-10">{{ item.age }}</td>
+                                        <td *ngIf="ths[2].isVisible" class="p-10 fs-10">{{ item.mortality | number }}</td>
+                                        <td *ngIf="ths[3].isVisible" class="p-10 fs-10">{{ item.mortality_rate | number : '1.2-2' }} %</td>
+                                        <td *ngIf="ths[4].isVisible" class="p-10 fs-10">{{ item.cull | number }}</td>
+                                        <td *ngIf="ths[5].isVisible" class="p-10 fs-10">{{ item.bird_count | number }}</td>
+                                        <td *ngIf="ths[6].isVisible" class="p-10 fs-10">{{ item.real_egg_count | number }} pcs</td>
+                                        <td *ngIf="ths[7].isVisible" class="p-10 fs-10">{{ item.production_rate | number : '1.2-2' }} %</td>
+                                        <td *ngIf="ths[8].isVisible" class="p-10 fs-10">{{ item.feeds.bags | number }}</td>
+                                        <td *ngIf="ths[9].isVisible" class="p-10 fs-10">{{ item.feeds.string }}</td>
+                                        <td *ngIf="ths[10].isVisible" class="p-10 fs-10">
+                                            <ng-container *ngFor="let medicine of item.medicine_name; let i = index">
+                                                {{ medicine.medicine }}{{ i < item.medicine_name.length - 1 ? ', ': '' }}
+                                            </ng-container>
+                                        </td>
+                                        <td *ngIf="ths[11].isVisible" class="p-10 fs-10">{{ item.sortingRecordstatus ? item.sortingRecordstatus : item.recordStatus }}</td>
+                                    </tr>
+                                </ng-container>
+                                <ng-container *ngIf="!isLoaded">
+                                    <tr>
+                                        <td class="text-uppercase" *ngFor="let x of counter(visible_columns.length); let i = index">
+                                            <ngx-skeleton-loader [theme]="{
+                                            'border-radius' : '5px',
+                                            'margin-bottom' : '0px',
+                                            'height' : '20px'
+                                            }"></ngx-skeleton-loader>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                                <ng-container *ngIf="isLoaded && items.length == 0">
+                                    <tr>
+                                    <td [attr.colspan]="visible_columns.length" class="text-center">No Results found</td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="isLoaded && visible_columns.length == 1">
+                <div class="row">
+                    <div class="col-12 text-center">
+                    <p class="mb-0">Please choose egg type</p>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+        <div class="row ml-0 mr-0 border-bottom">
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                <div class="row">
+                    <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto mt-40">
+                        <p class="fw-500 fs-14">Prepared By:</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8 text-center mt-40">
+                        <p class="mb-0 fs-14">{{ user_profile.user_profile.first_name }} {{ user_profile.user_profile.last_name }}</p>
+                        <hr class="m-0">
+                        <p class="fs-12">Signature over Printed Name</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 ml-auto">
+                <div class="row">
+                    <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto mt-40">
+                        <p class="fw-500 fs-14">Approved By:</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-8 text-center mt-40">
+                        <p class="mb-0 h-22"></p>
+                        <hr class="m-0">
+                        <p class="fs-12">Signature over Printed Name</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-20">
+        <div class="col-xl-auto">
+            <mat-spinner-button (btnClick)="exportPdf('pdf')" [options]="btnOps" [disabled]="!isLoaded"></mat-spinner-button>
+        </div>
+    </div>
+</div>

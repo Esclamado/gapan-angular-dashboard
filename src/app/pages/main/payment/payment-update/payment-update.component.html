@@ -1,0 +1,368 @@
+<section class="main-container p-20">
+    <div class="row mb-35">
+        <div class="col-9">
+            <h1 class="heading">Update Payment</h1>
+        </div>
+        <div class="col-3">
+            <button type="button" mat-flat-button class="btn btn-sm btn-secondary btn-block" (click)="goBack('go_back', 'payment_add')">
+                <i class="icon-back"></i>
+                <span class="ml-15">Go back to Order Info</span>
+            </button>
+        </div>
+    </div>
+    <div class="row mb-20">
+        <div class="col-8">
+            <div class="container-card view-record p-20">
+                <form [formGroup]="paymentForm" (ngSubmit)="openModal()">
+                    <div class="row">
+                        <div class="col-7">
+                            <div class="form-group mb-45">
+                                <label class="text-secondary">Mode of Payment <span class="required">*</span></label>
+                                <mat-select class="btn btn-drop-down btn-block text-left" formControlName="mode_of_payment" [disabled]="!canChangeMode" (selectionChange)="changePayment($event)">
+                                    <mat-option *ngFor="let mode_of_payment of mode_of_payment_options" [value]="mode_of_payment.value">{{ mode_of_payment.label }}</mat-option>
+                                </mat-select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <ng-container *ngIf="mode_of_payment == 1">
+                        
+                    </ng-container>
+                    <ng-container *ngIf="mode_of_payment == 2">
+                        <div class="row">
+                            <div class="col-7">
+                                <div class="form-group mb-45">
+                                    <label class="text-secondary">Credit Amount</label>
+                                    <p class="text-danger">₱ {{ paymentForm.controls.balance.value | number : '1.2-2' }}</p>
+                                    <!-- <input type="number" min="1" placeholder="0" formControlName="balance" class="form-control mb-10" disabled> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-7">
+                                <div class="form-group mb-45 p-relative">
+                                    <label class="text-secondary">Date to pay credited amount <span class="required">*</span></label>
+                                    <input matInput [matDatepicker]="due_date_picker" placeholder="mm/dd/yyyy" formControlName="due_date" class="form-control date-input mb-10" (click)="due_date_picker.open()" [disabled]="userProfile && userProfile.user_role_id == 5" readonly (dateChange)="chooseDate($event)">
+                                    <mat-datepicker-toggle matSuffix [for]="due_date_picker" class="p-absolute r-0 t-30"></mat-datepicker-toggle>
+                                    <mat-datepicker #due_date_picker></mat-datepicker>
+                                    <ng-container *ngIf="paymentForm.controls.due_date.touched">
+                                        <p class="text-danger" *ngIf="paymentForm.controls.due_date.hasError('required')">Date of credit payment is required</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="mode_of_payment == 3">
+                        <div class="row">
+                            <div class="col-7">
+                                <div class="form-group mb-45">
+                                    <label class="text-secondary">Total Price</label>
+                                    <p class="text-danger">₱ {{ paymentForm.controls.total_price.value | number : '1.2-2' }}</p>
+                                    <!-- <input type="number" min="1" placeholder="0" formControlName="balance" class="form-control mb-10" disabled> -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-7">
+                                <div class="form-group mb-45">
+                                    <label class="text-secondary">Remaining Balance</label>
+                                    <p class="text-danger">₱ {{ paymentForm.controls.balance.value | number : '1.2-2' }}</p>
+                                    <!-- <input type="number" min="1" placeholder="0" formControlName="balance" class="form-control mb-10" disabled> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-7">
+                                <div class="form-group mb-45 p-relative">
+                                    <label class="text-secondary">Date to pay balanced amount</label>
+                                    <input matInput [matDatepicker]="due_date_picker" placeholder="mm/dd/yyyy" formControlName="due_date" class="form-control date-input mb-10" (click)="due_date_picker.open()" [disabled]="userProfile && userProfile.user_role_id == 5" readonly (dateChange)="chooseDate($event)">
+                                    <mat-datepicker-toggle matSuffix [for]="due_date_picker" class="p-absolute r-0 t-30"></mat-datepicker-toggle>
+                                    <mat-datepicker #due_date_picker></mat-datepicker>
+                                    <ng-container *ngIf="paymentForm.controls.due_date.touched">
+                                        <p class="text-danger" *ngIf="paymentForm.controls.due_date.hasError('required')">Date of balance payment is required</p>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <!-- <div class="row">
+                        <div class="col-7">
+                            <div class="form-group mb-45">
+                                <label class="text-secondary">Payment Status <span class="required">*</span></label>
+                                <mat-select class="btn btn-drop-down btn-block text-left" formControlName="payment_status">
+                                    <mat-option *ngFor="let payment_status of payment_status_options" [value]="payment_status.value">{{ payment_status.label }}</mat-option>
+                                </mat-select>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <div class="row">
+                        <div class="col-7">
+                            <div class="form-group mb-45">
+                                <label class="text-secondary">Enter Cash Amount <span class="required">*</span></label>
+                                <input class="form-control mb-10" type="number" min="0" step="0.01" formControlName="payment" (input)="calculateRemaining($event)" [readonly]="mode_of_payment==2 && !item.last_payment"/>
+                                <ng-container *ngIf="paymentForm.controls.payment.touched">
+                                    <ng-container *ngIf="mode_of_payment == 1">
+                                        <p class="text-danger" *ngIf="paymentForm.controls.payment.hasError('required')">Cash amount is required</p>
+                                        <p class="text-danger" *ngIf="paymentForm.controls.payment.hasError('min')">Cash amount must not be lower than the total price</p>
+                                        <p class="text-danger" *ngIf="paymentForm.controls.payment.hasError('max')">Cash amount must not exceed the total price</p>
+                                    </ng-container>
+                                    <ng-container *ngIf="mode_of_payment == 2">
+                                        <p class="text-danger" *ngIf="paymentForm.controls.payment.hasError('required')">Cash amount is required</p>
+                                        <p class="text-danger" *ngIf="paymentForm.controls.payment.hasError('min')">Cash amount must not be lower than the total price</p>
+                                        <p class="text-danger" *ngIf="paymentForm.controls.payment.hasError('max')">Cash amount must not exceed the total price</p>
+                                    </ng-container>
+                                    <ng-container *ngIf="mode_of_payment == 3">
+                                        <ng-container *ngIf="item.last_payment">
+                                            <p class="text-danger" *ngIf="paymentForm.controls.payment.hasError('required')" >Cash amount is required</p>
+                                            <p class="text-danger" *ngIf="paymentForm.controls.payment.hasError('min')">Cash amount must be equal to the remaining balance</p>
+                                            <p class="text-danger" *ngIf="paymentForm.controls.payment.hasError('max')">Cash amount must be equal to the remaining balance</p>
+                                        </ng-container>
+                                        <ng-container *ngIf="!item.last_payment">
+                                            <p class="text-danger" *ngIf="paymentForm.controls.payment.hasError('required')" >Cash amount is required</p>
+                                            <p class="text-danger" *ngIf="paymentForm.controls.payment.hasError('min')">Cash amount must be atleast 50% of total amount</p>
+                                            <p class="text-danger" *ngIf="paymentForm.controls.payment.hasError('max')">Cash amount must not exceed the total price</p>
+                                        </ng-container>
+                                    </ng-container>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-7">
+                            <div class="form-group mb-45">
+                                <label class="text-secondary">Upload Official Receipt<!--  <span class="required">*</span> --></label>
+                                <div class="row">
+                                    <div class="col-12 mb-10" [ngClass]="{ 'd-none' : !isReceiptPhotoLoaded }">
+                                        <image-cropper 
+                                            class="img-responsive"
+                                            [imageChangedEvent]="receiptPhoto"
+                                            [maintainAspectRatio]="false"
+                                            format="png,jpg,jpeg,ico"
+                                            (imageCropped)="imageReceiptPhotoCropped($event)"
+                                            (imageLoaded)="imageReceiptLoaded()"
+                                            [autoCrop]= "true"
+                                        ></image-cropper>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input id="receipt-upload" class="d-none" type="file" (change)="receiptChange($event)" accept="image/jpeg, image/png"/>
+                                        <label for="receipt-upload" mat-flat-button class="btn btn-secondary btn-block">
+                                            {{ isReceiptPhotoLoaded ? 'Choose another file' : 'Choose a file' }}
+                                        </label>
+                                    </div>
+                                    <div class="col-auto flex-align-center" *ngIf="!isReceiptPhotoLoaded">
+                                        <p class="m-0 font-italic">No file chosen</p>
+                                    </div>
+                                    <p class="text-danger" *ngIf="receiptUploadWrongFile">Receipt is not valid</p>
+                                    <p class="text-danger" *ngIf="uploadReceiptMaxLimitReached">Receipt must not exceed 1MB</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-7">
+                            <div class="form-group mb-45">
+                                <label class="text-secondary">Add Official Receipt no. <span class="required">*</span></label>
+                                <input class="form-control mb-10" type="text" formControlName="receipt_no" />
+                                <ng-container *ngIf="paymentForm.controls.receipt_no.touched">
+                                    <p class="text-danger" *ngIf="paymentForm.controls.receipt_no.hasError('required')">Official Receipt no. is required</p>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12 ml-auto">
+                            <button type="button" mat-flat-button class="btn btn-clear btn-block" (click)="goBack('form_cancel', 'payment_add')">
+                                Cancel
+                            </button>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-12 col-12">
+                            <button type="submit" mat-flat-button class="btn btn-primary btn-block" [disabled]="!paymentForm.valid">
+                                Save
+                            </button>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-12 col-12">
+                            <button type="button" mat-flat-button class="btn btn-secondary btn-block" [disabled]="!paymentForm.valid" (click)="savePrint()">
+                                Save & Preview
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="row mb-20">
+                <div class="col-12">
+                    <div class="container-card view-record p-20">
+                        <div class="row mb-10">
+                            <div class="col-xl-12 col-lg-12 col-md-12 order-summary">
+                                <p class="mini-heading">Cost Summary</p>
+                                <div class="row">
+                                    <div class="col-auto">
+                                        <p class="mb-0">Items</p>
+                                    </div>
+                                    <div class="col-auto ml-auto">
+                                        <p class="mb-0">Amount</p>
+                                    </div>
+                                </div>
+                                <hr class="h-2">
+                                <ng-container *ngFor="let item of item.order_items; let i = index">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <p class="fs-15 m-0 lh-22">Fresh Egg</p>
+                                            <p class="fs-15 m-0 lh-22"><span class="text-secondary">Size: </span>{{ item.egg_type.type }}</p>
+                                            <p class="fs-14 m-0 lh-19">
+                                                <span class="text-secondary">Qty: </span>
+                                                <ng-container *ngFor="let details of item.order_item_details; let i = index">
+                                                    <span *ngIf="details.qty > 0">{{ details.qty | number }} {{ details.egg_cart_type.type | lowercase }}{{ details.qty > 1 ? 's' : '' }}<ng-container *ngIf="item.order_item_details.length - 1 > i">, </ng-container><br *ngIf="details.qty >= 99999 && item.order_item_details.length - 1 > i"></span>
+                                                </ng-container>
+                                            </p>
+                                        </div>
+                                        <div class="col-auto">
+                                            <p class="fs-15 m-0 lh-22">₱ {{ item.order_item_details[0].price | number : '1.2-2' }} x {{ item.total_pieces }}</p>
+                                        </div>
+                                        <div class="col-auto ml-auto">
+                                            <p class="fs-15 m-0 lh-22">₱ {{ item.total_price | number : '1.2-2' }}</p>
+                                        </div>
+                                        <div class="col-12">
+                                            <p class="fs-12 m-0 text-secondary font-italic lh-19">(Price per egg size x total no. of eggs)</p>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                </ng-container>
+                                <ng-container *ngIf="item.discount > 0">
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <p class="fs-15 m-0">
+                                                Discounted
+                                            </p>
+                                        </div>
+                                        <div class="col-auto ml-auto">
+                                            <p class="fs-15 m-0">
+                                                ₱ {{ item.discount | number : '1.2-2' }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                </ng-container>
+                                <ng-container *ngIf="mode_of_payment == 1">
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <p class="fs-17 m-0 fw-500">
+                                                Order Total ({{ item.total_pieces | number }} items)
+                                            </p>
+                                        </div>
+                                        <div class="col-auto ml-auto">
+                                            <p class="fs-17 m-0 text-danger fw-500">
+                                                ₱ {{ item.total_price | number : '1.2-2' }}
+                                            </p>
+                                            <!-- <p class="fs-12 m-0" *ngIf="item.discount > 0">
+                                                (-₱ {{ item.discount | number : '1.2-2' }})
+                                            </p> -->
+                                        </div>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="mode_of_payment == 2">
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <p class="fs-15 m-0">
+                                                Order Total ({{ item.total_pieces | number }} items)
+                                            </p>
+                                        </div>
+                                        <div class="col-auto ml-auto">
+                                            <p class="fs-15 m-0">
+                                                ₱ {{ item.total_price | number : '1.2-2' }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <p class="fs-17 m-0 fw-500">
+                                                Credit Amount
+                                            </p>
+                                        </div>
+                                        <div class="col-auto ml-auto">
+                                            <p class="fs-17 m-0 text-danger fw-500">
+                                                ₱ {{ item.total_price | number : '1.2-2' }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <p class="fs-15 m-0">
+                                                Date to pay credited amount
+                                            </p>
+                                        </div>
+                                        <div class="col-auto ml-auto">
+                                            <p class="fs-15 m-0 text-danger">
+                                                {{ paymentForm.controls.due_date.value ? (paymentForm.controls.due_date.value | timezone | date: 'MM/dd/yyyy') : 'Pick due date' }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="mode_of_payment == 3">
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <p class="fs-15 m-0">
+                                                Order Total ({{ item.total_pieces | number }} items)
+                                            </p>
+                                        </div>
+                                        <div class="col-auto ml-auto">
+                                            <p class="fs-15 m-0">
+                                                ₱ {{ item.total_price | number : '1.2-2' }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <p class="fs-15 m-0">
+                                                Initial Payment
+                                            </p>
+                                        </div>
+                                        <div class="col-auto ml-auto">
+                                            <p class="fs-15 m-0">
+                                                ₱ {{ item.payment.payment | number : '1.2-2' }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <p class="fs-17 m-0 fw-500">
+                                                Remaining Balance
+                                            </p>
+                                        </div>
+                                        <div class="col-auto ml-auto">
+                                            <p class="fs-17 m-0 text-danger fw-500">
+                                                ₱ {{ item.payment.balance | number : '1.2-2' }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <p class="fs-15 m-0">
+                                                Date to pay balanced amount
+                                            </p>
+                                        </div>
+                                        <div class="col-auto ml-auto">
+                                            <p class="fs-15 m-0 text-danger">
+                                                {{ paymentForm.controls.due_date.value ? (paymentForm.controls.due_date.value | timezone | date: 'MM/dd/yyyy') : 'Pick due date' }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

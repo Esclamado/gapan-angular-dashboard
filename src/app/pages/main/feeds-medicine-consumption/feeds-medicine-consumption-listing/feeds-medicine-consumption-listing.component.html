@@ -1,0 +1,122 @@
+<section class="main-container p-20">
+    <div class="row">
+      <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12">
+        <h1 class="heading">Feeds and Medicine Consumption</h1>
+      </div>
+      <!-- <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6 col-6 ml-auto">
+        <button type="button" mat-flat-button class="btn btn-primary btn-block" routerLink="/feeds-medicine-consumption/create">
+          <i class="icon-add"></i>
+          <span class="ml-15 d-xl-inline d-lg-inline d-md-inline d-sm-none d-none">Add new monthly record</span>
+        </button>
+      </div> -->
+      <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6 col-6 ml-auto">
+        <mat-spinner-button (btnClick)="routerLink('/feeds-medicine-consumption/create')" [options]="btnOps"></mat-spinner-button>
+      </div>
+    </div>
+    <div class="container-card p-20 mb-20 mt-20">
+      <div class="row">
+        <div class="col-12">
+          <h6 class="card-heading">Filter</h6>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12">
+          <div class="form-group mb-0">
+            <input [satDatepicker]="created_at_picker" [max]="max_date" class="w-0 p-0 border-0" (dateChange)="chooseCreatedAt($event)" [(ngModel)]="created_at">
+            <sat-datepicker #created_at_picker [rangeMode]="true"></sat-datepicker>
+            <button type="button" mat-flat-button class="btn btn-drop-down btn-block text-left" (click)="created_at_picker.open()">{{ from && to ? (from | timezone | date: 'MMMM dd, yyyy') + ' - ' + (to | timezone | date: 'MMMM dd, yyyy') : 'Choose harvest dates' }}
+                <i class="icon-arrow-drop-down ml-5"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12 ml-auto">
+          <div class="form-group mb-0">
+            <button type="button" mat-flat-button class="btn btn-sm btn-clear btn-block" (click)="clearFilters()">
+              Clear Filters
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <ng-container *ngIf="isLoaded && items.length > 0">
+        <div class="col-3 mb-20" *ngFor="let item of items; let i = index">
+          <div class="container-card card-radius p-20">
+            <mat-icon>home</mat-icon>
+            <p class="mini-heading mb-10 fs-14">House/Building no. {{ item.house.house_name }}</p>
+            <div class="row">
+            <i Class="material-icons ml-10">check_box</i><p class="sub-heading mt-3 mb-10 fs-13">Daily House Report: {{ item.report_count }}</p>
+            </div>
+            <!-- *ngIf="activity && activity.updated_at" -->
+            <span class="sub-heading italic fs-12">Last updated: {{ item.updated_at | timeago }} </span>
+  <!--           <h1 class="heading mb-0">{{ dashboard_data ? (dashboard_data.daily_reports_for_approval | number) : 0 }}</h1> -->
+            <span class="card-line">____________________________</span>
+            <div class="row">
+                <button Class="fs-12 p-1 ml-11" mat-flat-button [routerLink]="[ '/feeds-medicine-consumption/view', item.house.id]">View Details
+              <i class="material-icons mb-2">keyboard_arrow_right</i>
+              </button>
+            </div>  
+         </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!isLoaded">
+        <div class="col-3 mb-20" *ngFor="let x of counter(3); let i = index">
+          <div class="container-card card-radius p-20">
+            <mat-icon>home</mat-icon>
+            <p class="mini-heading mb-10 fs-14">
+              <ngx-skeleton-loader [theme]="{
+                'height' : '20px'
+              }"></ngx-skeleton-loader>
+            </p>
+            <div class="row">
+            <i Class="material-icons ml-10">check_box</i><p class="sub-heading mt-3 mb-10 fs-13">
+              <ngx-skeleton-loader [theme]="{
+                'height' : '20px',
+                'width' : '150px'
+              }"></ngx-skeleton-loader>
+            </p>
+            </div>
+            <!-- *ngIf="activity && activity.updated_at" -->
+            <span class="sub-heading italic fs-12">
+              <ngx-skeleton-loader [theme]="{
+                'height' : '12px'
+              }"></ngx-skeleton-loader>
+            </span>
+  <!--           <h1 class="heading mb-0">{{ dashboard_data ? (dashboard_data.daily_reports_for_approval | number) : 0 }}</h1> -->
+            <span class="card-line">____________________________</span>
+            <div class="row">
+                <button Class="fs-12 p-1 ml-11" mat-flat-button>View Details
+              <i class="material-icons mb-2">keyboard_arrow_right</i>
+              </button>
+            </div>  
+         </div>
+        </div>
+      </ng-container>
+    </div>
+    <ng-container *ngIf="isLoaded && items.length == 0">
+      <div class="row pl-10 pr-10 meds-cont scrollable h-300">
+        <div class="col-12 text-center">
+          <p class="sub-heading align-center">No record found</p>
+        </div>
+      </div>
+    </ng-container>
+    <div class="row">
+      <div class="col-12">
+        <div class="container-card p-20">
+          <div class="row">
+            <div class="col-xl-7 col-lg-9 col-md-12 col-sm-12 col-12 ml-auto">
+              <mat-paginator
+                [length]="totalItems"
+                [pageSize]="limit"
+                [hidePageSize]="true"
+                [showFirstLastButtons]="true"
+                (page)="gotoPage($event)"
+                [pageIndex]="page - 1"
+              >
+              </mat-paginator>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>

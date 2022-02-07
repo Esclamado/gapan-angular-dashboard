@@ -1,0 +1,162 @@
+<section class="main-container p-20">
+    <div class="row mb-20">
+        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12">
+            <button type="button" mat-flat-button class="btn btn-sm btn-secondary" (click)="goBack()">
+                <i class="icon-back"></i>
+                <span class="ml-15">Go back to list</span>
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-12 col-12">
+            <h1 class="heading">Fresh Eggs Stocks</h1>
+            <p class="sub-heading mb-8">Date: <strong>{{ dateToday | timezone | date: 'MMMM dd, yyyy' }}</strong></p>
+            <ng-container *ngIf="showtimeago">
+              <p class="sub-heading italic mb-20" *ngIf="activity && activity.created_at">last updated {{ activity.created_at | timeago }}</p>
+              <ngx-skeleton-loader *ngIf="!activity || !activity.created_at" [theme]="{
+                  'border-radius' : '5px',
+                  'margin-bottom' : '10px',
+                  'height' : '20px'
+              }"></ngx-skeleton-loader>
+            </ng-container>
+        </div>
+        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6 col-6 ml-auto">
+          <mat-spinner-button (btnClick)="openModal()" [options]="btnOps_pdf"></mat-spinner-button>
+        </div>
+        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6 col-6">
+          <mat-spinner-button (btnClick)="exportToCsv()" [options]="btnOps_csv"></mat-spinner-button>
+        </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="container-card p-20">
+          <div class="row mb-20">
+            <div class="col-xl-auto col-lg-auto col-md-12 col-sm-12 col-12">
+              <div class="row">
+                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto border-right">
+                  <p>Beginning stocks</p>
+                  <h3>{{ item.beginning_stocks | number }}</h3>
+                </div>
+                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto border-right">
+                  <p>Harvested Eggs for this day</p>
+                  <h3>{{ item.total_harvested | number }}</h3>
+                </div>
+                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto border-right">
+                  <p>No. of Waste/Sales</p>
+                  <h3>{{ item.waste_sales | number }}</h3>
+                </div>
+                <div class="col-xl-auto col-lg-auto col-md-auto col-sm-auto col-auto">
+                  <p>Total Remaining for this day</p>
+                  <h3>{{ item.total_remaining_stocks | number }}</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ng-container *ngIf="!isLoaded">
+            <div class="data-table p-relative table-listing" style="overflow: auto;">
+              <table [ngStyle]="{'width.px': 200 * visible_columns.length}">
+                <thead>
+                  <tr>
+                    <ng-container *ngFor="let th of ths; let i = index">
+                      <th *ngIf="th.isVisible" [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                        {{ th.label }}
+                        <ng-container *ngIf="th.canSort">
+                          <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                          <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                        </ng-container>
+                      </th>
+                    </ng-container>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let x of counter(visible_columns.length);">
+                    <td class="text-uppercase" *ngFor="let x of counter(visible_columns.length); let i = index">
+                      <ngx-skeleton-loader [theme]="{
+                        'border-radius' : '5px',
+                        'margin-bottom' : '0px',
+                        'height' : '20px'
+                      }"></ngx-skeleton-loader>
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <ng-container *ngFor="let th of ths; let i = index">
+                      <th *ngIf="th.isVisible" [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                        {{ th.label }}
+                        <ng-container *ngIf="th.canSort">
+                          <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                          <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                        </ng-container>
+                      </th>
+                    </ng-container>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="visible_columns.length > 0 && isLoaded && items.length > 0">
+            <div class="data-table p-relative table-listing" style="overflow: auto;">
+              <table [ngStyle]="{'width.px': 200 * visible_columns.length}">
+                <thead>
+                  <tr>
+                    <ng-container *ngFor="let th of ths; let i = index">
+                      <th [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                        {{ th.label }}
+                        <ng-container *ngIf="th.canSort">
+                          <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                          <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                        </ng-container>
+                      </th>
+                    </ng-container>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of items; let i = index">
+                    <td>{{ item.egg_type.type }}</td>
+                    <td>
+                      <mat-chip-list>
+                        <mat-chip *ngIf="item.remaining > 0" color="primary">Available</mat-chip>
+                        <mat-chip *ngIf="item.remaining == 0" color="danger">Out of Stock</mat-chip>
+                      </mat-chip-list>
+                    </td>
+                    <td>{{ item.beginning ? (item.beginning | number) : 0  }}</td>
+                    <td>{{ item.harvested ? (item.harvested | number) : 0  }}</td>
+                    <td>{{ item.sales ? (item.sales | number) : 0  }}</td>
+                    <td>{{ item.remaining ? (item.remaining | number) : 0  }}</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <ng-container *ngFor="let th of ths; let i = index">
+                      <th [ngClass]="{ 'sort' : th.canSort }" (click)="orderList(th.canSort, th.key, order.order_by == 'desc' ? 'asc' : 'desc')">
+                        {{ th.label }}
+                        <ng-container *ngIf="th.canSort">
+                          <i *ngIf="order.order_by_column == th.key" [ngClass]="{ 'icon-datatables-order-asc' : order.order_by == 'asc', 'icon-datatables-order-desc' : order.order_by == 'desc' }"></i>
+                          <i [ngClass]="{ 'icon-datatables-order-default' : order.order_by_column != th.key }"></i>
+                        </ng-container>
+                      </th>
+                    </ng-container>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="visible_columns.length > 0 && isLoaded && items.length == 0">
+            <div class="row h-300">
+              <div class="col-12 text-center">
+                <p class="mb-0 align-center">No Results found</p>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="isLoaded && visible_columns.length == 0">
+            <div class="row">
+              <div class="col-12 text-center">
+                <p class="mb-0">Please choose column visibility</p>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </section>

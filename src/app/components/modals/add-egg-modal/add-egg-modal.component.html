@@ -1,0 +1,60 @@
+<div class="row">
+    <div class="col-12">
+        <h6 class="mini-heading">{{ modal_title }}</h6>
+    </div>
+</div>
+<form [formGroup]="eggForm" (ngSubmit)="submit()">
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label class="text-secondary">Egg size</label>
+                <div class="input-group">
+                    <input type="text" formControlName="type" class="form-control" />
+                </div>
+                <small class="form-text text-muted mb-10">Example: Large</small>
+                <ng-container *ngIf="eggForm.controls.type.touched">
+                    <p class="text-danger" *ngIf="eggForm.controls.type.hasError('required')">This egg size field should be valid and not empty</p>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label class="text-secondary">Egg size (Short name)</label>
+                <div class="input-group">
+                    <input type="text" formControlName="type_shortcode" class="form-control"/>
+                </div>
+                <small class="form-text text-muted mb-10">Example: L</small>
+                <ng-container *ngIf="eggForm.controls.type_shortcode.touched">
+                    <p class="text-danger" *ngIf="eggForm.controls.type_shortcode.hasError('required')">This short egg size field should be valid and not empty</p>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label class="text-secondary">Price (per piece) <span class="required">*</span></label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text mb-10">Php</span>
+                    </div>
+                    <input type="number" formControlName="price" class="form-control mb-10"/>
+                </div>
+                <ng-container *ngIf="eggForm.controls.price.touched">
+                    <p class="text-danger" *ngIf="eggForm.controls.price.hasError('required')">This price field should be valid and not empty</p>
+                    <p class="text-danger" *ngIf="eggForm.controls.price.hasError('min')">Price must not be less than 0</p>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6 text-right">
+            <button type="button" mat-flat-button class="btn btn-sm btn-clear" (click)="closeModal()" [disabled]="isLoading">Cancel</button>
+        </div>
+        <div class="col-6">
+            <button type="submit" mat-flat-button class="btn btn-sm btn-block" [ngClass]="{'btn-primary' : action != 'delete', 'btn-danger' : action == 'delete' }" [disabled]="(!eggForm.valid && action != 'delete') || isLoading">{{ modal_primary_button }}</button>
+        </div>
+    </div>
+</form>

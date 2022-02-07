@@ -1,0 +1,384 @@
+<section class="main-container p-20">
+    <div class="row mb-20">
+        <div class="col-xl-9 col-lg-8 col-md-7 col-sm-6 col-12">
+            <h1 class="heading">View Daily Report</h1>
+        </div>
+        <div class="col-xl-auto col-lg-auto col-md-auto col-sm-6 col-12 ml-auto">
+            <button type="button" mat-flat-button class="btn btn-sm btn-secondary btn-block" (click)="goBack()">
+                <i class="icon-back"></i>
+                <span class="ml-15">Go back to list</span>
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-8">
+            <mat-tab-group [(selectedIndex)]="selectedIndex" (selectedIndexChange)="tabChanged($event)">
+                <mat-tab label="Harvest Report">
+                    <div class="container-card view-record p-20">
+                        <div class="row mb-20">
+                            <div class="col-12">
+                                <div class="data-table p-relative table-listing" style="overflow: auto;">
+                                    <table>
+                                      <tbody>
+                                        <!-- <tr>
+                                            <td class="w-30-per alt">Report Status</td>
+                                            <td class="w-70-per">{{ item.recordStatus }}</td>
+                                        </tr> -->
+                                        <tr>
+                                            <td class="w-30-per alt">Harvested by</td>
+                                            <td class="w-70-per">{{ item.name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">House/Building no.</td>
+                                            <td class="w-70-per">{{ item.house ? item.house.house_name : '' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Report Date</td>
+                                            <td class="w-70-per">{{ item.prepared_by_date | timezone | date: 'MM/dd/yyyy' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Report Time</td>
+                                            <td class="w-70-per">{{ item.prepared_by_date | timezone | date: 'hh:mm aaa' }}</td>
+                                        </tr>
+                                      </tbody>
+                                  </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <h6>Basic Details</h6>
+                            </div>
+                        </div>
+                        <div class="row mb-20">
+                            <div class="col-12">
+                                <div class="data-table p-relative table-listing" style="overflow: auto;">
+                                    <table>
+                                      <tbody>
+                                        <tr>
+                                            <td class="w-30-per alt">Bird Count</td>
+                                            <td class="w-70-per">{{ item.bird_count | number }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Age</td>
+                                            <td class="w-70-per">{{ item.age }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Mortality</td>
+                                            <td class="w-70-per">{{ item.mortality | number }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Cull</td>
+                                            <td class="w-70-per">{{ item.cull | number }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">End Bird Population</td>
+                                            <td class="w-70-per">{{ item.bird_count | number }}</td>
+                                        </tr>
+                                      </tbody>
+                                  </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <h6>Feeds and Medicine Consumption Details</h6>
+                            </div>
+                        </div>
+                        <div class="row mb-20">
+                            <div class="col-12">
+                                <div class="data-table p-relative table-listing" style="overflow: auto;">
+                                    <table>
+                                      <tbody>
+                                        <tr>
+                                            <td class="w-30-per alt">No. of Sacks</td>
+                                            <td class="w-70-per">{{ item.feeds ? (item.feeds.bags | number) : 0 }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Feed Consumption</td>
+                                            <td class="w-70-per">{{ item.feeds ? item.feeds.string : '' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Medicine intake</td>
+                                            <td class="w-70-per">
+                                                <ng-container *ngFor="let medicine of item.medicine; let i = index">
+                                                    {{ medicine.medicine }} {{ i < item.medicine.length - 1 ? ', ' : '' }}
+                                                </ng-container>
+                                            </td>
+                                        </tr>
+                                      </tbody>
+                                  </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <h6>Counted Egg Details</h6>
+                            </div>
+                        </div>
+                        <div class="row mb-20">
+                            <div class="col-12">
+                                <div class="data-table p-relative table-listing" style="overflow: auto;">
+                                    <table>
+                                      <tbody>
+                                        <tr>
+                                            <td class="w-30-per alt">Egg Count</td>
+                                            <td class="w-70-per">{{ item.egg_count | number }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Validated Egg Count</td>
+                                            <td class="w-70-per">{{ item.real_egg_count | number }}</td>
+                                        </tr>
+                                      </tbody>
+                                  </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <h6>Report Signatory</h6>
+                            </div>
+                        </div>
+                        <div class="row mb-20">
+                            <div class="col-12">
+                                <div class="data-table p-relative table-listing" style="overflow: auto;">
+                                    <table>
+                                      <tbody>
+                                        <tr>
+                                            <td class="w-30-per alt">Prepared by</td>
+                                            <td class="w-70-per">{{ item.prepared_by_name }} ({{ item.prepared_by_role }})</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Signature</td>
+                                            <td class="w-70-per">
+                                                <img [src]="item.prepared_by_path" class="img-responsive">
+                                            </td>
+                                        </tr>
+                                      </tbody>
+                                  </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-20" *ngIf="item.checked_by">
+                            <div class="col-12">
+                                <div class="data-table p-relative table-listing" style="overflow: auto;">
+                                    <table>
+                                      <tbody>
+                                        <tr>
+                                            <td class="w-30-per alt">Checked by</td>
+                                            <td class="w-70-per">{{ item.checked_by_name }} ({{ item.checked_by_role }})</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Signature</td>
+                                            <td class="w-70-per">
+                                                <img [src]="item.checked_by_path" class="img-responsive">
+                                            </td>
+                                        </tr>
+                                      </tbody>
+                                  </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="item.received_by">
+                            <div class="col-12">
+                                <div class="data-table p-relative table-listing" style="overflow: auto;">
+                                    <table>
+                                      <tbody>
+                                        <tr>
+                                            <td class="w-30-per alt">Received by</td>
+                                            <td class="w-70-per">{{ item.received_by_name }} ({{ item.received_by_role }})</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Signature</td>
+                                            <td class="w-70-per">
+                                                <img [src]="item.received_by_path" class="img-responsive">
+                                            </td>
+                                        </tr>
+                                      </tbody>
+                                  </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-tab>
+                <mat-tab label="Sorted Report" *ngIf="item && item.isSorted == 1">
+                    <div class="container-card view-record p-20">
+                        <div class="row mb-20">
+                            <div class="col-12">
+                                <div class="data-table p-relative table-listing" style="overflow: auto;">
+                                    <table>
+                                      <tbody>
+                                        <!-- <tr>
+                                            <td class="w-30-per alt">Report Status</td>
+                                            <td class="w-70-per">{{ item.recordStatus }}</td>
+                                        </tr> -->
+                                        <tr>
+                                            <td class="w-30-per alt">Sorted by</td>
+                                            <td class="w-70-per">{{ sorting_item.prepared_by_name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">House/Building no.</td>
+                                            <td class="w-70-per">{{ sorting_item.house ? sorting_item.house.house_name : '' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Report Date</td>
+                                            <td class="w-70-per">{{ sorting_item.prepared_by_date | timezone | date: 'MM/dd/yyyy' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Report Time</td>
+                                            <td class="w-70-per">{{ sorting_item.prepared_by_date | timezone | date: 'hh:mm aaa' }}</td>
+                                        </tr>
+                                      </tbody>
+                                  </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <h6>Sorted Egg Details</h6>
+                            </div>
+                        </div>
+                        <div class="row mb-20">
+                            <div class="col-12">
+                                <div class="data-table p-relative table-listing" style="overflow: auto;">
+                                    <table>
+                                      <tbody>
+                                        <tr *ngFor="let egg of sorting_item.eggs; let i = index">
+                                            <td class="w-30-per alt">{{ egg.egg_type.type }}</td>
+                                            <td class="w-70-per">{{ egg.egg_count | number }}</td>
+                                        </tr>
+                                      </tbody>
+                                  </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-20">
+                            <div class="col-12">
+                                <div class="data-table p-relative table-listing" style="overflow: auto;">
+                                    <table>
+                                      <tbody>
+                                        <tr>
+                                            <td class="w-30-per alt">Total Eggs</td>
+                                            <td class="w-70-per">{{ sorting_item.real_egg_count | number }}</td>
+                                        </tr>
+                                      </tbody>
+                                  </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-10">
+                            <div class="col-12">
+                                <h6>Report Signatory</h6>
+                            </div>
+                        </div>
+                        <div class="row mb-20">
+                            <div class="col-12">
+                                <div class="data-table p-relative table-listing" style="overflow: auto;">
+                                    <table>
+                                      <tbody>
+                                        <tr>
+                                            <td class="w-30-per alt">Prepared by</td>
+                                            <td class="w-70-per">{{ sorting_item.prepared_by_name }} ({{ sorting_item.prepared_by_role }})</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Signature</td>
+                                            <td class="w-70-per">
+                                                <img [src]="sorting_item.prepared_by_path" class="img-responsive">
+                                            </td>
+                                        </tr>
+                                      </tbody>
+                                  </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-20" *ngIf="sorting_item.checked_by">
+                            <div class="col-12">
+                                <div class="data-table p-relative table-listing" style="overflow: auto;">
+                                    <table>
+                                      <tbody>
+                                        <tr>
+                                            <td class="w-30-per alt">Checked by</td>
+                                            <td class="w-70-per">{{ sorting_item.checked_by_name }} ({{ sorting_item.checked_by_role }})</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Signature</td>
+                                            <td class="w-70-per">
+                                                <img [src]="sorting_item.checked_by_path" class="img-responsive">
+                                            </td>
+                                        </tr>
+                                      </tbody>
+                                  </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="sorting_item.received_by">
+                            <div class="col-12">
+                                <div class="data-table p-relative table-listing" style="overflow: auto;">
+                                    <table>
+                                      <tbody>
+                                        <tr>
+                                            <td class="w-30-per alt">Received by</td>
+                                            <td class="w-70-per">{{ sorting_item.received_by_name }} ({{ sorting_item.received_by_role }})</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="w-30-per alt">Signature</td>
+                                            <td class="w-70-per">
+                                                <img [src]="sorting_item.received_by_path" class="img-responsive">
+                                            </td>
+                                        </tr>
+                                      </tbody>
+                                  </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+            
+        </div>
+        <div class="col-4">
+            <div class="body-card p-20 mb-20">
+                <h1 class="mini-heading fs-14 fw-500 mb-20">Actions</h1>
+                <mat-spinner-button (btnClick)="openModal()" [options]="btnOps_pdf" [disabled]="!isLoaded"></mat-spinner-button>
+                <mat-spinner-button (btnClick)="exportToCsv()" [options]="btnOps_csv" [disabled]="!isLoaded"></mat-spinner-button>
+            </div>
+            <div class="body-card p-20">
+                <h1 class="mini-heading fs-14 fw-500 mb-20">Report Tracking Status</h1>
+                <div class="tracking-sect">
+                    <ngx-skeleton-loader *ngIf="!item" [theme]="{
+                        'border-radius': '5px',
+                        'margin-bottom': '0px',
+                        'height': '20px'
+                    }"></ngx-skeleton-loader>
+                    <div class="timeline-sect" *ngIf="item">
+                        <ng-container *ngFor="let tl of item.tracking_status; let i = index">
+                            <div class="tl-row row">
+                                <div class="col-3 pr-0">
+                                    <div class="timeline tl-date no-padding-left no-padding-right">
+                                        {{ tl.date | timezone | date:'MMM dd, yyyy' }}<br>
+                                        {{ tl.date | timezone | date:'h:mm aaa' }}
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    <div class="timeline">
+                                        <div class="timeline-progress" [ngClass]="{'finish': tl.status == 2}"></div>
+                                        <div class="timeline-circle" [ngClass]="[tl.status == 2 ? 'finish':'', tl.status == 1 ? 'pending':'']">
+                                            <img class="tl-check" *ngIf="tl.status == 2" src="./../../../../../assets/images/custom-check.png">
+                                            <div class="tl-pending" *ngIf="tl.status == 1"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-7 pl-0">
+                                    <div class="timeline tl-cont no-padding-left">
+                                        <p class="mb-0 mt-3">{{ tl.message }}</p>
+                                        <!-- <p no-margin class="tl-note" *ngIf="tl.note">{{ tl.note }}</p> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
